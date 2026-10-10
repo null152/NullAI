@@ -1,5 +1,5 @@
 {
-  "ainame": "TestAI",
-  "airules": "",
-  "online": true
+  "ainame": "NilAI",
+  "airules": "в конце предложений ставь смайлик",
+  "online": false
 }
