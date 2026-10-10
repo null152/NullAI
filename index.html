@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#09060f">
+<title>GDPSA AI</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg: #09060f;
+    --panel: #100b19;
+    --panel2: #171020;
+    --purple: #a855f7;
+    --pink: #ff4fbb;
+    --text: #f7efff;
+    --muted: #8d819d;
+    --border: rgba(186, 105, 255, .18);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, Arial, sans-serif;
+    overflow: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 420px;
+    height: 420px;
+    top: -230px;
+    left: 25%;
+    background: #8b22ff;
+    opacity: .13;
+    filter: blur(120px);
+    pointer-events: none;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    bottom: -240px;
+    right: -80px;
+    background: #ff299e;
+    opacity: .12;
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+button, input {
+    font: inherit;
+}
+
+button {
+    color: inherit;
+    cursor: pointer;
+}
+
+.app {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 1000px;
+    margin: auto;
+    border-left: 1px solid rgba(255,255,255,.035);
+    border-right: 1px solid rgba(255,255,255,.035);
+    background: rgba(12, 8, 18, .74);
+}
+
+/* HEADER */
+
+.header {
+    height: 76px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 22px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(15, 10, 23, .86);
+    backdrop-filter: blur(20px);
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    color: white;
+    background: linear-gradient(145deg, #a855f7, #6723bd 60%, #35104f);
+    box-shadow: 0 0 25px #a855f733;
+}
+
+.logo svg {
+    width: 25px;
+    height: 25px;
+}
+
+.brand-name {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.brand-name span {
+    color: var(--pink);
+}
+
+.brand-sub {
+    color: var(--muted);
+    font-size: 10px;
+    margin-top: 5px;
+    letter-spacing: 1.4px;
+}
+
+.header-actions {
+    display: flex;
+    gap: 9px;
+}
+
+.icon-btn {
+    width: 39px;
+    height: 39px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #ffffff04;
+    transition: .2s;
+}
+
+.icon-btn:hover {
+    color: var(--pink);
+    border-color: #ff4fbb66;
+    background: #ff4fbb0c;
+}
+
+.icon-btn svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+}
+
+/* CHAT */
+
+.chat {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 22px 20px;
+    scroll-behavior: smooth;
+}
+
+.messages::-webkit-scrollbar {
+    width: 4px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+    background: #a855f755;
+    border-radius: 10px;
+}
+
+.welcome {
+    max-width: 480px;
+    margin: 9vh auto 35px;
+    text-align: center;
+    animation: appear .5s ease;
+}
+
+.welcome-logo {
+    width: 78px;
+    height: 78px;
+    margin: 0 auto 25px;
+    display: grid;
+    place-items: center;
+    border-radius: 25px;
+    border: 1px solid #bd7aff44;
+    background: linear-gradient(145deg, #8c36ce25, #ff4fbb0a);
+    box-shadow: 0 0 55px #a855f71c, inset 0 0 25px #a855f710;
+    color: #d8a4ff;
+}
+
+.welcome-logo svg {
+    width: 38px;
+    height: 38px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.4;
+}
+
+.welcome h1 {
+    font-size: clamp(26px, 5vw, 36px);
+    font-weight: 800;
+    letter-spacing: -1.3px;
+}
+
+.welcome h1 span {
+    background: linear-gradient(90deg, #bd77ff, #ff65c6);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.welcome p {
+    max-width: 340px;
+    margin: 14px auto 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+.suggestions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    max-width: 490px;
+    margin: 0 auto;
+    animation: appear .7s ease;
+}
+
+.suggestion {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 59px;
+    padding: 12px;
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    background: linear-gradient(120deg, #a855f70a, #ff4fbb05);
+    color: #c7b8d6;
+    font-size: 12px;
+    transition: .2s;
+}
+
+.suggestion:hover {
+    color: white;
+    border-color: #bd70ff77;
+    background: #a855f714;
+    transform: translateY(-2px);
+}
+
+.suggestion svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    stroke: var(--pink);
+    fill: none;
+    stroke-width: 1.6;
+}
+
+/* MESSAGE BUBBLES */
+
+.message {
+    display: flex;
+    gap: 11px;
+    max-width: 720px;
+    margin: 0 auto 23px;
+    animation: appear .25s ease;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.avatar {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    color: #ddaaff;
+    background: #a855f714;
+}
+
+.avatar svg {
+    width: 19px;
+    height: 19px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+}
+
+.user .avatar {
+    color: #ff82ce;
+    background: #ff4fbb12;
+    border-color: #ff4fbb30;
+}
+
+.message-content {
+    min-width: 0;
+    max-width: calc(100% - 45px);
+}
+
+.message-label {
+    margin: 2px 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #c99aff;
+}
+
+.user .message-label {
+    text-align: right;
+    color: #ff8bd0;
+}
+
+.bubble {
+    padding: 13px 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px 16px 16px 16px;
+    background: linear-gradient(135deg, #1a1026, #120c1b);
+    color: #e8dfee;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.user .bubble {
+    border-color: #d34cae30;
+    border-radius: 16px 4px 16px 16px;
+    background: linear-gradient(135deg, #51205a66, #251127);
+    color: #fff0fa;
+}
+
+/* INPUT */
+
+.composer-wrap {
+    flex-shrink: 0;
+    padding: 13px 20px 17px;
+    background: linear-gradient(0deg, #0c0812 75%, transparent);
+}
+
+.composer {
+    max-width: 720px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 58px;
+    padding: 8px 9px 8px 17px;
+    border: 1px solid #a855f746;
+    border-radius: 18px;
+    background: #150e20;
+    box-shadow: 0 0 28px #a855f70a;
+    transition: .2s;
+}
+
+.composer:focus-within {
+    border-color: #b46affaa;
+    box-shadow: 0 0 0 3px #a855f710, 0 0 30px #a855f714;
+}
+
+.composer input {
+    width: 100%;
+    min-width: 0;
+    border: none;
+    outline: none;
+    color: white;
+    background: transparent;
+    font-size: 13px;
+}
+
+.composer input::placeholder {
+    color: #746680;
+}
+
+.send-btn {
+    width: 41px;
+    height: 41px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 13px;
+    color: white;
+    background: linear-gradient(135deg, #b052f5, #ed42ad);
+    box-shadow: 0 0 19px #bc46e633;
+    transition: .2s;
+}
+
+.send-btn:hover {
+    filter: brightness(1.15);
+    transform: scale(1.04);
+}
+
+.send-btn:active {
+    transform: scale(.94);
+}
+
+.send-btn svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+}
+
+.send-btn:disabled {
+    opacity: .45;
+    cursor: default;
+}
+
+.disclaimer {
+    margin-top: 12px;
+    color: #71647e;
+    font-size: 10px;
+    text-align: center;
+}
+
+.typing {
+    display: flex;
+    gap: 5px;
+    padding: 5px 3px;
+}
+
+.typing span {
+    width: 6px;
+    height: 6px;
+    background: var(--pink);
+    border-radius: 50%;
+    animation: bounce .8s infinite alternate;
+}
+
+.typing span:nth-child(2) { animation-delay: .2s; }
+.typing span:nth-child(3) { animation-delay: .4s; }
+
+@keyframes bounce {
+    from { opacity: .35; transform: translateY(0); }
+    to { opacity: 1; transform: translateY(-4px); }
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 520px) {
+    .header {
+        height: 67px;
+        padding: 0 15px;
+    }
+
+    .logo {
+        width: 39px;
+        height: 39px;
+        border-radius: 12px;
+    }
+
+    .brand-name { font-size: 15px; }
+    .brand-sub { font-size: 9px; }
+    .header-actions { gap: 6px; }
+    .icon-btn { width: 36px; height: 36px; }
+
+    .messages {
+        padding: 15px 13px 20px;
+    }
+
+    .welcome {
+        margin: 8vh auto 29px;
+    }
+
+    .welcome-logo {
+        width: 67px;
+        height: 67px;
+        border-radius: 22px;
+    }
+
+    .welcome h1 { font-size: 28px; }
+
+    .suggestions { gap: 8px; }
+
+    .suggestion {
+        min-height: 63px;
+        padding: 10px;
+        gap: 8px;
+        font-size: 11px;
+    }
+
+    .composer-wrap {
+        padding: 10px 12px 12px;
+    }
+
+    .composer {
+        min-height: 54px;
+        border-radius: 16px;
+    }
+
+    .disclaimer { font-size: 9px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+    <header class="header">
+        <div class="brand">
+            <div class="logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                     stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/>
+                    <path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name">GDPSA <span>AI</span></div>
+                <div class="brand-sub">ARTIFICIAL INTELLIGENCE</div>
+            </div>
+        </div>
+
+        <div class="header-actions">
+            <button class="icon-btn" id="newChat" title="Новый чат" aria-label="Новый чат">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14M5 12h14"/>
+                </svg>
+            </button>
+            <button class="icon-btn" id="clearChat" title="Очистить чат" aria-label="Очистить чат">
+                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v5M14 11v5"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="chat">
+        <div class="messages" id="messages">
+
+            <section id="welcome">
+                <div class="welcome">
+                    <div class="welcome-logo">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2.5 14.8 9.2 21.5 12l-6.7 2.8-2.8 6.7-2.8-6.7L2.5 12l6.7-2.8L12 2.5Z"/>
+                            <path d="m19 2 .7 2.3L22 5l-2.3.7L19 8l-.7-2.3L15 5l2.3-.7L19 2Z"/>
+                        </svg>
+                    </div>
+
+                    <h1>Привет, <span>создатель.</span></h1>
+                    <p>
+                        Я GDPSA AI — твой будущий интеллектуальный
+                        помощник. С чего начнём?
+                    </p>
+                </div>
+
+                <div class="suggestions">
+                    <button class="suggestion" data-prompt="Привет! Расскажи о себе">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 3a9 9 0 1 0 9 9"/>
+                            <path d="M12 7v5l3 2M16 3h5v5"/>
+                        </svg>
+                        <span>Познакомимся?</span>
+                    </button>
+
+                    <button class="suggestion" data-prompt="Помоги придумать идею для проекта">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 18h6M10 22h4M8 14c-1.7-1.2-3-3.2-3-5.5a7 7 0 1 1 14 0c0 2.3-1.3 4.3-3 5.5-.7.5-1 1.3-1 2H9c0-.7-.3-1.5-1-2Z"/>
+                        </svg>
+                        <span>Найти идею</span>
+                    </button>
+
+                    <button class="suggestion" data-prompt="Напиши пример HTML-кода">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>
+                        </svg>
+                        <span>Помощь с кодом</span>
+                    </button>
+
+                    <button class="suggestion" data-prompt="Какие возможности можно добавить в GDPSA AI?">
+                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="9"/>
+                            <path d="M12 8v8M8 12h8"/>
+                        </svg>
+                        <span>Новые возможности</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <div class="composer-wrap">
+            <form class="composer" id="chatForm">
+                <input
+                    id="userInput"
+                    type="text"
+                    placeholder="Напиши сообщение..."
+                    autocomplete="off"
+                    maxlength="4000"
+                    aria-label="Сообщение"
+                >
+                <button class="send-btn" id="sendBtn" type="submit"
+                        aria-label="Отправить сообщение">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m22 2-7 20-4-9-9-4Z"/>
+                        <path d="M22 2 11 13"/>
+                    </svg>
+                </button>
+            </form>
+            <div class="disclaimer">GDPSA AI · ПЕРВАЯ ВЕРСИЯ</div>
+        </div>
+    </main>
+</div>
+
+<script>
+const messages = document.getElementById("messages");
+const welcome = document.getElementById("welcome");
+const input = document.getElementById("userInput");
+const form = document.getElementById("chatForm");
+const sendBtn = document.getElementById("sendBtn");
+
+const botIcon = `
+<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/>
+</svg>`;
+
+const userIcon = `
+<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="8" r="4"/>
+    <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
+</svg>`;
+
+function addMessage(text, role) {
+    const message = document.createElement("div");
+    message.className = "message " + role;
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.innerHTML = role === "user" ? userIcon : botIcon;
+
+    const content = document.createElement("div");
+    content.className = "message-content";
+
+    const label = document.createElement("div");
+    label.className = "message-label";
+    label.textContent = role === "user" ? "Ты" : "GDPSA AI";
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
+
+    content.append(label, bubble);
+    message.append(avatar, content);
+    messages.appendChild(message);
+
+    messages.scrollTop = messages.scrollHeight;
+    return message;
+}
+
+function showTyping() {
+    const message = document.createElement("div");
+    message.className = "message";
+
+    const avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.innerHTML = botIcon;
+
+    const content = document.createElement("div");
+    content.className = "message-content";
+
+    const label = document.createElement("div");
+    label.className = "message-label";
+    label.textContent = "GDPSA AI";
+
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+
+    const typing = document.createElement("div");
+    typing.className = "typing";
+    typing.innerHTML = "<span></span><span></span><span></span>";
+
+    bubble.appendChild(typing);
+    content.append(label, bubble);
+    message.append(avatar, content);
+    messages.appendChild(message);
+    messages.scrollTop = messages.scrollHeight;
+
+    return message;
+}
+
+function getDemoReply(text) {
+    const lower = text.toLowerCase();
+
+    if (/привет|здравствуй|хай|hello/.test(lower)) {
+        return "Привет! 👋 Я GDPSA AI. Сейчас это первая версия моего интерфейса. Давай вместе сделаем меня умнее!";
+    }
+
+    if (/кто ты|расскажи о себе|что ты умеешь/.test(lower)) {
+        return "Я GDPSA AI — прототип интеллектуального помощника. Пока я работаю в демонстрационном режиме. Следующим этапом можно подключить настоящую ИИ-модель.";
+    }
+
+    if (/html|код|программ|javascript|сайт/.test(lower)) {
+        return "Давай создавать! 💜 Напиши, что именно нужно сделать. В следующей версии мы сможем подключить настоящую ИИ-модель, чтобы я генерировал код и отвечал на сложные вопросы.";
+    }
+
+    if (/иде|возможност|добавить|проект/.test(lower)) {
+        return "Есть идея! ✨ Мы можем постепенно превратить GDPSA AI в полноценного помощника. Сначала подключим настоящий интеллект, затем добавим нужные тебе возможности.";
+    }
+
+    return "Я получил твоё сообщение! ✨ Пока я работаю в демонстрационном режиме и отвечаю по заготовленным правилам. Чтобы отвечать на любые вопросы по-настоящему, мне нужно подключить ИИ-модель.";
+}
+
+let replyTimer = null;
+let typingElement = null;
+let chatVersion = 0;
+
+function sendMessage(text) {
+    text = text.trim();
+    if (!text || sendBtn.disabled) return;
+
+    welcome.style.display = "none";
+
+    addMessage(text, "user");
+    input.value = "";
+    sendBtn.disabled = true;
+
+    const currentVersion = chatVersion;
+    typingElement = showTyping();
+
+    replyTimer = setTimeout(() => {
+        if (currentVersion !== chatVersion) return;
+
+        if (typingElement) {
+            typingElement.remove();
+            typingElement = null;
+        }
+
+        addMessage(getDemoReply(text), "bot");
+        sendBtn.disabled = false;
+        input.focus();
+    }, 700 + Math.random() * 500);
+}
+
+form.addEventListener("submit", event => {
+    event.preventDefault();
+    sendMessage(input.value);
+});
+
+document.querySelectorAll(".suggestion").forEach(button => {
+    button.addEventListener("click", () => {
+        sendMessage(button.dataset.prompt);
+    });
+});
+
+function resetChat() {
+    chatVersion++;
+
+    if (replyTimer) clearTimeout(replyTimer);
+    if (typingElement) typingElement.remove();
+
+    typingElement = null;
+    replyTimer = null;
+    sendBtn.disabled = false;
+
+    messages.innerHTML = "";
+    messages.appendChild(welcome);
+    welcome.style.display = "";
+    input.value = "";
+    input.focus();
+}
+
+document.getElementById("newChat").addEventListener("click", resetChat);
+document.getElementById("clearChat").addEventListener("click", resetChat);
+</script>
+</body>
+  </html>
