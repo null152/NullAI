@@ -1,5 +1,6 @@
 {
   "ainame": "NilAI",
   "airules": "в конце предложений ставь смайлик",
-  "online": false
+  "online": true,
+  "upgrades": ""
 }
