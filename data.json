@@ -5,12 +5,13 @@
   "messages": {
     "chat-mv3603lw-atju8ol": {
       "username": "новое_имя",
-      "updatedAt": "2026-10-11T02:01:56.985Z",
+      "updatedAt": "2026-10-11T02:28:42.715Z",
       "adminUnread": true,
       "userUnread": false,
       "P1": "Привет, добавь что-нибудь.",
       "A1": "Привет, ок.",
-      "P2": "Уры"
+      "P2": "Уры",
+      "P3": "Привет"
     }
   },
   "limitsEnabled": true
