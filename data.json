@@ -10,5 +10,6 @@
       "userUnread": false,
       "P1": "Привет, добавь что-нибудь."
     }
-  }
+  },
+  "limitsEnabled": false
 }
