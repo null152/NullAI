@@ -4,5 +4,6 @@
   "upgrades": "Редактирование и тестинг сайта.",
   "info": "",
   "messages": {},
-  "players": 0
+  "players": 0,
+  "limitsEnabled": false
 }
