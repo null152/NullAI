@@ -7,7 +7,7 @@
       "username": "новое_имя",
       "updatedAt": "2026-10-11T02:01:29.203Z",
       "adminUnread": false,
-      "userUnread": true,
+      "userUnread": false,
       "P1": "Привет, добавь что-нибудь.",
       "A1": "Привет, ок."
     }
