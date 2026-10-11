@@ -6,10 +6,11 @@
   "messages": {
     "chat-8f119320-fb7c-4725-aebc-75ecc52faf63": {
       "username": "Валера",
-      "updatedAt": "2026-10-11T05:01:58.139Z",
+      "updatedAt": "2026-10-11T05:02:31.462Z",
       "adminUnread": false,
-      "userUnread": false,
-      "P1": "Привет, помогите пожалуйста, как изменить имя?"
+      "userUnread": true,
+      "P1": "Привет, помогите пожалуйста, как изменить имя?",
+      "A1": "Ваше?"
     }
   },
   "players": 0,
