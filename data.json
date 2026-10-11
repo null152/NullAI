@@ -7,7 +7,7 @@
     "chat-8f119320-fb7c-4725-aebc-75ecc52faf63": {
       "username": "Валера",
       "updatedAt": "2026-10-11T05:01:58.139Z",
-      "adminUnread": true,
+      "adminUnread": false,
       "userUnread": false,
       "P1": "Привет, помогите пожалуйста, как изменить имя?"
     }
