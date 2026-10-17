@@ -4,563 +4,1244 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NEXUS AI — Admin</title>
+<meta name="theme-color" content="#050711">
+<title>AI</title>
 <style>
-:root {
-  color-scheme: dark;
-  --bg:#080b12; --panel:#101621; --border:#283349;
-  --text:#edf2ff; --muted:#929db1; --accent:#8b7cff;
-  --green:#52dfab; --red:#ff8798;
+:root{
+  color-scheme:dark;
+  --bg:#050711;--panel:#0a1020;--panel-light:#101a2b;--line:#20314a;
+  --blue:#38bdf8;--cyan:#67e8f9;--text:#f0f7ff;--muted:#91a4bd;
+  --danger:#ff7288;
+  --gradient:linear-gradient(120deg,#67e8f9 0%,#38bdf8 45%,#818cf8 100%);
 }
 *{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%}
 body{
-  margin:0;min-height:100vh;color:var(--text);
-  background:radial-gradient(ellipse at top,#211c43,transparent 52%),var(--bg);
-  font:15px/1.5 system-ui,-apple-system,sans-serif
+  background:radial-gradient(ellipse at 10% 0%,#12365a66,transparent 40%),radial-gradient(ellipse at 90% 20%,#30205a38,transparent 36%),radial-gradient(ellipse at 50% 100%,#08243a40,transparent 42%),var(--bg);
+  color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(#ffffff04 1px,transparent 1px),linear-gradient(90deg,#ffffff04 1px,transparent 1px);
+  background-size:42px 42px;mask-image:linear-gradient(to bottom,#0008,transparent 75%);
 }
 button,input,textarea{font:inherit}
-button{cursor:pointer;border:0;border-radius:11px;padding:12px 16px;font-weight:700;color:white;background:linear-gradient(135deg,#9a8dff,#6554ed)}
-button:hover{filter:brightness(1.1)}
-button:disabled{opacity:.5;cursor:wait}
-.secondary{background:#1a2333;border:1px solid #354159}
-.danger{background:#391b27;border:1px solid #743344}
-.full{width:100%;margin-top:22px}
-.screen{width:min(920px,calc(100% - 28px));margin:auto;padding:32px 0 55px}
-.hidden{display:none!important}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}
-.logo{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#aaa0ff,#6554ed);font-size:23px;font-weight:900}
-.brand-name{font-size:21px;font-weight:850;letter-spacing:2px}
-.sub,.muted{color:var(--muted);font-size:13px}
-.card{background:#101621ed;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:17px;box-shadow:0 16px 60px #0003}
-h1{font-size:clamp(25px,5vw,34px);margin:0 0 8px}
-h2{font-size:19px;margin:0 0 6px}
-p{color:var(--muted);margin:0 0 18px}
-label{display:block;margin:17px 0 7px;font-size:13px;font-weight:700;color:#d0d8e9}
-input,textarea{width:100%;display:block;padding:13px 14px;border-radius:11px;border:1px solid #303b50;background:#090e17;color:var(--text);outline:none}
-input:focus,textarea:focus{border-color:var(--accent)}
-textarea{min-height:135px;resize:vertical}
-.row{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.status{margin-top:14px;padding:12px;background:#090e17;border:1px solid var(--border);border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;color:var(--muted)}
-.status.ok{color:var(--green)}.status.error{color:var(--red)}
-.note{font-size:12px;color:var(--muted);margin-top:12px}
-.footer{text-align:center;color:#657087;font-size:12px;margin-top:24px}
-@media(max-width:550px){.screen{padding-top:20px}.card{padding:17px}.topbar{align-items:flex-start}}
+
+/* Убираем синюю подсветку при нажатии на кнопки */
+button{
+  color:inherit;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+  -webkit-touch-callout:none;
+  user-select:none;
+  -webkit-user-select:none;
+  outline:none;
+}
+button:active{
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+}
+button:focus:not(:focus-visible){
+  outline:none;
+  box-shadow:none;
+}
+button:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:3px;
+}
+button:disabled{opacity:.55;cursor:not-allowed}
+::selection{background:#38bdf855;color:white}
+.icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.icon-btn{
+  width:46px;height:46px;display:inline-flex;align-items:center;justify-content:center;
+  border:1px solid #293b55;background:linear-gradient(145deg,#121d30dd,#0a1120dd);
+  color:#b0c6df;border-radius:15px;flex-shrink:0;box-shadow:inset 0 1px #ffffff08;
+  transition:border-color .2s,background .2s,transform .2s,box-shadow .2s;
+}
+.icon-btn:hover{border-color:#4bcdf0;color:#9bf2ff;background:#10253a;box-shadow:0 0 22px #38bdf820;transform:translateY(-1px)}
+.primary-btn{
+  min-height:47px;padding:0 19px;border:1px solid #66e5fa88;border-radius:14px;
+  background:var(--gradient);background-size:180% 180%;color:#04101b;font-weight:800;
+  box-shadow:0 5px 24px #38bdf82b,inset 0 1px #ffffff8c;
+  transition:transform .2s,box-shadow .2s,background-position .3s;
+}
+.primary-btn:hover{transform:translateY(-2px);background-position:100% 50%;box-shadow:0 8px 30px #38bdf844,inset 0 1px #ffffffa0}
+.secondary-btn{min-height:44px;padding:0 16px;border:1px solid var(--line);border-radius:13px;background:#111b2b;color:#d8e8f8}
+.danger-btn{border-color:#753b49;background:#39141f;color:#ffb2bf;box-shadow:none}
+
+.loading-screen,.login-screen{
+  position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:22px;
+  background:radial-gradient(ellipse at 50% 35%,#12375c99,transparent 52%),var(--bg)
+}
+.loading-screen{z-index:300}.login-screen{z-index:200;display:none;overflow-y:auto}
+.loading-content{width:100%;max-width:370px;text-align:center}
+.logo-symbol{
+  width:72px;height:72px;margin:0 auto 23px;display:flex;align-items:center;justify-content:center;
+  color:var(--cyan);border:1px solid #55d9fa55;border-radius:24px;background:linear-gradient(145deg,#16364f,#0b1326);
+  box-shadow:0 0 0 7px #38bdf809,0 0 50px #38bdf82b,inset 0 1px #ffffff22;position:relative;overflow:hidden;
+}
+.logo-symbol::after{
+  content:"";position:absolute;inset:-100% -50%;
+  background:linear-gradient(110deg,transparent 42%,#ffffff18 50%,transparent 58%);
+  transform:translateX(-45%);animation:shine 5s ease-in-out infinite;
+}
+.logo-symbol .icon{width:33px;height:33px;filter:drop-shadow(0 0 10px #67e8f9aa)}
+.loading-title{font-size:26px;font-weight:900;letter-spacing:3px}
+.loading-status{margin-top:11px;color:var(--muted);font-size:14px;line-height:1.7;overflow-wrap:anywhere}
+.loading-track{height:4px;margin-top:27px;overflow:hidden;border-radius:5px;background:#18243a}
+.loading-bar{width:35%;height:100%;border-radius:inherit;background:var(--gradient);box-shadow:0 0 16px #38bdf8;animation:loading 1.2s ease-in-out infinite alternate}
+@keyframes loading{from{transform:translateX(-30%)}to{transform:translateX(190%)}}
+@keyframes shine{0%,65%,100%{transform:translateX(-45%)}85%{transform:translateX(45%)}}
+@keyframes appear{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.retry-btn{display:none;margin-top:20px}
+.login-card{
+  width:100%;max-width:430px;padding:35px;border:1px solid #34496599;border-radius:28px;
+  background:linear-gradient(145deg,#0e1728f5,#080d19f7);
+  box-shadow:0 30px 110px #0009,0 0 50px #38bdf80a,inset 0 1px #ffffff0d;
+  animation:appear .35s ease;position:relative;overflow:hidden;
+}
+.login-card::before,.modal-card::before{
+  content:"";position:absolute;top:0;left:12%;right:12%;height:1px;
+  background:linear-gradient(90deg,transparent,#67e8f9aa,#818cf888,transparent);
+}
+.brand{display:flex;align-items:center;gap:13px}
+.brand-symbol{
+  width:47px;height:47px;display:flex;align-items:center;justify-content:center;color:#a5f3fc;
+  background:linear-gradient(145deg,#173d57,#111a32);border:1px solid #4bcdf055;border-radius:16px;box-shadow:0 0 24px #38bdf81b;
+}
+.brand-name{font-size:20px;font-weight:900;letter-spacing:2px}
+.brand-caption{margin-top:4px;color:#91a7c2;font-size:11px;letter-spacing:1.6px}
+.login-title{margin:35px 0 10px;font-size:31px;letter-spacing:-.8px}
+.login-description{margin:0 0 28px;color:#a1b2c9;font-size:15px;line-height:1.8}
+.field-label{display:block;margin-bottom:10px;color:#bdd0e5;font-size:13px;font-weight:700;letter-spacing:.5px}
+.field-group{margin-bottom:19px}
+.password-wrap{
+  display:flex;align-items:center;gap:11px;min-height:56px;padding:0 14px;color:#80bdd7;
+  border:1px solid #293d58;border-radius:15px;background:linear-gradient(145deg,#070d18,#0c1423);
+  transition:border-color .2s,box-shadow .2s;
+}
+.password-wrap:focus-within{border-color:#48c9ec;box-shadow:0 0 0 3px #38bdf812,0 0 22px #38bdf80c}
+.password-wrap input{flex:1;min-width:0;width:100%;border:0;outline:0;background:transparent;color:white;font-size:17px}
+.password-wrap input:focus-visible{outline:none}
+.password-help{margin:14px 0 0;color:#a1b2c9;font-size:14px;line-height:1.9}
+.shimmer-link{display:inline;color:#8beaff;font-weight:800;text-decoration:none;border-bottom:1px solid #36cfff66;overflow-wrap:anywhere;transition:filter .2s}
+.shimmer-link:hover{filter:drop-shadow(0 0 8px #67e8f9aa)}
+.login-submit{width:100%;margin-top:17px;display:flex;justify-content:center;align-items:center;gap:10px}
+.login-error{min-height:21px;margin:12px 0 0;color:var(--danger);font-size:13px;overflow-wrap:anywhere}
+.login-foot{margin-top:23px;display:flex;justify-content:center;align-items:center;gap:8px;color:#849ab4;font-size:12px}
+
+.app{display:none;width:100%;height:100vh;height:100dvh;min-height:400px}
+.app.visible{display:flex}
+.workspace{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  min-height:84px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:15px 28px;border-bottom:1px solid #29395288;background:linear-gradient(110deg,#080d18ef,#0b1220ef);
+  backdrop-filter:blur(20px);box-shadow:0 8px 35px #00012;
+}
+.top-heading{min-width:0;display:flex;align-items:center;gap:12px}
+.top-ai-icon{
+  width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:#a5f3fc;border:1px solid #4bcdf066;border-radius:15px;
+  background:linear-gradient(145deg,#173d57,#111a32);
+  box-shadow:0 0 22px #38bdf81b,inset 0 1px #ffffff12;
+}
+.top-ai-icon .icon{width:24px;height:24px;filter:drop-shadow(0 0 7px #67e8f9aa)}
+.top-title{font-size:20px;font-weight:900;letter-spacing:1px;background:var(--gradient);background-clip:text;-webkit-background-clip:text;color:transparent;overflow-wrap:anywhere}
+.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap}
+.daily-limit{
+  min-height:44px;display:flex;align-items:center;gap:8px;padding:0 14px;border:1px solid #314862;border-radius:14px;
+  background:linear-gradient(145deg,#101c2c,#0a1220);color:#c2eafa;font-size:14px;white-space:nowrap;
+}
+.daily-limit strong{color:#a5f3fc}
+.daily-limit.warning{border-color:#805d2c;color:#ffd18a}
+.daily-limit.exhausted{border-color:#803e4c;color:#ff9baa}
+.chat-scroll{flex:1;min-height:0;overflow-y:auto;scroll-behavior:smooth;overscroll-behavior:contain;scrollbar-color:#263c56 transparent;scrollbar-width:thin}
+.chat-content{width:100%;max-width:1050px;min-height:100%;margin:0 auto;padding:38px}
+.messages{display:flex;flex-direction:column;gap:28px}
+.welcome{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:25px 0 55px;text-align:center}
+.welcome h1{margin:27px 0 14px;font-size:clamp(34px,5vw,49px);letter-spacing:-1.6px;line-height:1.2}
+.welcome h1 span{background:var(--gradient);background-size:200% auto;background-clip:text;-webkit-background-clip:text;color:transparent;animation:gradientFlow 7s ease infinite}
+@keyframes gradientFlow{0%,100%{background-position:0% center}50%{background-position:100% center}}
+.welcome p{max-width:500px;margin:0;color:#a5b6cc;font-size:17px;line-height:1.9;white-space:pre-wrap;overflow-wrap:anywhere}
+.welcome-info{max-width:600px;margin-top:25px;color:#c0d4e8;font-size:16px;line-height:1.9;overflow-wrap:anywhere;white-space:pre-wrap}
+
+.message{display:flex;align-items:flex-start;gap:15px;animation:appear .2s ease}
+.message.user{flex-direction:row-reverse}
+.message-avatar{
+  width:43px;height:43px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  color:#9cecff;background:linear-gradient(145deg,#112b40,#111a2d);
+  border:1px solid #3b627b;border-radius:15px;box-shadow:0 0 22px #38bdf80b;
+}
+.message.user .message-avatar{color:#06121d;background:var(--gradient);border-color:#6fe6fa;box-shadow:0 0 20px #38bdf820}
+.message-body{min-width:0;max-width:min(84%,800px)}
+.message.user .message-body{text-align:right}
+.message-author{display:none}
+.message-text{
+  display:block;max-width:100%;text-align:left;white-space:pre-wrap;overflow-wrap:anywhere;word-break:normal;
+  line-height:1.75;font-size:17px;color:#edf5ff;
+}
+.message.user .message-text{
+  display:inline-block;padding:15px 19px;background:linear-gradient(145deg,#102c40,#111e32);
+  border:1px solid #2c526b;border-radius:18px 6px 18px 18px;box-shadow:inset 0 1px #ffffff08,0 8px 25px #00012;
+}
+.message.assistant .message-text{
+  display:block;padding:13px 17px;color:#edf5ff;background:linear-gradient(145deg,#0d1625cc,#080e19cc);
+  border:1px solid #293d58;border-radius:6px 18px 18px 18px;box-shadow:inset 0 1px #ffffff08,0 8px 25px #00012;
+}
+.accent-text{color:#fff;font-weight:800;background:none;-webkit-background-clip:border-box;background-clip:border-box}
+.chat-heading{
+  display:block;width:fit-content;max-width:100%;margin:0 0 2px;font-size:1.45em;font-weight:900;
+  line-height:1.35;letter-spacing:-.35px;color:#fff;background:none;
+  -webkit-background-clip:border-box;background-clip:border-box;filter:none;
+}
+.chat-heading.colored-heading{
+  color:transparent;background:var(--gradient);background-clip:text;-webkit-background-clip:text;
+}
+.typing{display:flex;gap:6px;padding:13px 0}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--gradient);animation:typingBounce 1s infinite ease-in-out}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.45}30%{transform:translateY(-6px);opacity:1}}
+
+.composer-area{flex-shrink:0;padding:13px 22px max(14px,env(safe-area-inset-bottom));background:linear-gradient(transparent,#050711 25%)}
+.composer{
+  max-width:970px;margin:0 auto;display:flex;align-items:center;gap:10px;
+  padding:6px 7px 6px 17px;border:1px solid #344a64;border-radius:999px;
+  background:linear-gradient(145deg,#0e1727f7,#080e1af7);box-shadow:0 12px 42px #0002,inset 0 1px #ffffff08;
+  transition:border-color .2s,box-shadow .2s;
+}
+.composer:focus-within{border-color:#4bcdf0;box-shadow:0 0 0 3px #38bdf80c,0 12px 42px #0003,0 0 35px #38bdf80b}
+.composer textarea{
+  display:block;flex:1;min-width:0;width:100%;height:36px;min-height:36px;max-height:36px;
+  resize:none;border:none;outline:none;overflow-x:auto;overflow-y:hidden;
+  white-space:pre;overflow-wrap:normal;scrollbar-width:none;
+  background:transparent;color:#f0f7ff;padding:6px 0;line-height:24px;font-size:16px;
+}
+.composer textarea::-webkit-scrollbar{display:none}
+.composer textarea::placeholder{color:#8497b0}
+.composer textarea:focus-visible{outline:none}
+.composer-bottom{display:flex;justify-content:flex-end;align-items:center;gap:0;padding:0;flex-shrink:0}
+.composer .send-btn{
+  width:42px;height:42px;color:#04111a;background:var(--gradient);border:1px solid #70e9fa;
+  box-shadow:0 0 23px #38bdf824,inset 0 1px #ffffff88;position:relative;border-radius:50%;
+}
+.composer .send-btn:hover{box-shadow:0 0 32px #38bdf84a,inset 0 1px #ffffff99}
+.composer .send-btn .icon{width:20px;height:20px}
+.send-countdown{font-size:12px;font-weight:900;letter-spacing:-.3px;font-variant-numeric:tabular-nums}
+.composer .send-btn.cooldown{width:66px;gap:3px;border-radius:999px}
+.composer .send-btn.cooldown .icon{width:17px;height:17px}
+
+.toast{
+  position:fixed;z-index:500;bottom:25px;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 30px);
+  padding:14px 19px;color:#e9faff;background:linear-gradient(145deg,#13283b,#10172a);border:1px solid #42647e;border-radius:15px;
+  font-size:14px;line-height:1.6;box-shadow:0 12px 40px #0008,0 0 25px #38bdf810;overflow-wrap:anywhere;
+}
+.toast[hidden]{display:none}
+.modal-overlay{position:fixed;inset:0;z-index:450;display:none;align-items:center;justify-content:center;padding:20px;background:#02040bd9;backdrop-filter:blur(12px)}
+.modal-overlay.open{display:flex}
+.modal-card{position:relative;overflow:hidden;width:100%;max-width:420px;padding:28px;border:1px solid #344b66;border-radius:25px;background:linear-gradient(145deg,#111b2c,#080e1a);box-shadow:0 25px 90px #000a,0 0 35px #38bdf80a}
+.modal-card::before{content:"";position:absolute;top:0;left:12%;right:12%;height:1px;background:linear-gradient(90deg,transparent,#67e8f9aa,#818cf888,transparent)}
+.modal-icon{width:50px;height:50px;display:flex;align-items:center;justify-content:center;margin-bottom:19px;border-radius:16px;border:1px solid #38647b;background:linear-gradient(145deg,#17364b,#111b30);color:#a5f3fc;box-shadow:0 0 25px #38bdf813}
+.modal-title{margin:0 0 10px;font-size:24px;letter-spacing:-.5px}
+.modal-description{margin:0 0 23px;color:#a2b3c9;font-size:15px;line-height:1.8}
+.modal-input{width:100%;min-height:50px;padding:13px 15px;border:1px solid #293d58;border-radius:14px;outline:none;background:#070d18;color:white;font-size:16px}
+.modal-input:focus{border-color:#48c9ec;box-shadow:0 0 0 3px #38bdf812}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:23px}
+.modal-error{min-height:20px;margin-top:10px;color:var(--danger);font-size:13px}
+.message-text .shimmer-link{display:inline;color:#8beaff;background:none;border-bottom:1px solid #38bdf866;text-decoration:none;font-weight:800;overflow-wrap:anywhere}
+.message-text .shimmer-link:hover{filter:drop-shadow(0 0 8px #67e8f9aa)}
+
+@media(max-width:760px){
+  .topbar{min-height:68px;padding:11px 13px;gap:8px}
+  .top-heading{gap:8px}
+  .top-ai-icon{width:36px;height:36px;border-radius:12px}
+  .top-ai-icon .icon{width:21px;height:21px}
+  .top-title{font-size:17px}
+  .top-actions{gap:6px}
+  .top-actions .icon-btn{width:39px;height:39px;border-radius:12px}
+  .daily-limit{min-height:37px;padding:0 9px;font-size:12px}
+  .chat-content{padding:25px 16px 20px}
+  .welcome{padding:18px 0 30px}
+  .welcome h1{font-size:32px}
+  .welcome p{font-size:15px}
+  .welcome-info{font-size:15px}
+  .composer-area{padding:9px 11px max(11px,env(safe-area-inset-bottom))}
+  .composer{gap:8px;padding:5px 6px 5px 14px}
+  .composer textarea{height:34px;min-height:34px;max-height:34px;padding:5px 0;font-size:16px}
+  .composer .send-btn{width:38px;height:38px}
+  .message{gap:10px}
+  .message-avatar{width:35px;height:35px;border-radius:12px}
+  .message-body{max-width:calc(100% - 45px)}
+  .message-text{font-size:16px;line-height:1.75}
+  .message.assistant .message-text{padding:11px 13px}
+  .message.user .message-text{padding:12px 14px}
+  .login-card{padding:27px 23px}
+  .login-title{font-size:28px}
+}
+@media(max-width:420px){
+  .topbar{align-items:center}
+  .top-actions{max-width:78%}
+  .daily-limit{font-size:11px}
+  .chat-content{padding-left:12px;padding-right:12px}
+  .message-text{font-size:15px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
 </style>
 </head>
 <body>
 
-<!-- ЭКРАН ПОДКЛЮЧЕНИЯ: РОВНО ТРИ ПОЛЯ -->
-<main id="connectionScreen" class="screen">
-  <div class="brand">
-    <div class="logo">N</div>
-    <div><div class="brand-name">NEXUS AI</div><div class="sub">ADMINISTRATION SYSTEM</div></div>
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.9 5.8L20 11l-6.1 2.2L12 19l-2-5.8L4 11l6-2.2L12 3Z"/><path d="m19 14 1.1 2.9L23 18l-2.9 1.1L19 22l-1.1-2.9L15 18l2.9-1.1L19 14Z"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+<symbol id="i-eye-off" viewBox="0 0 24 24"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.5 0 10 7 10 7a15 15 0 0 1-3.1 3.8"/><path d="M6.2 6.2C3.5 8 2 12 2 12s3.5 7 10 7a10 10 0 0 0 4-.8"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6m4 4v6m6-6v6"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+</svg>
+
+<section id="loadingScreen" class="loading-screen">
+  <div class="loading-content">
+    <div class="logo-symbol"><svg class="icon"><use href="#i-spark"/></svg></div>
+    <div class="loading-title">AI</div>
+    <div id="loadingStatus" class="loading-status">Загружаем настройки...</div>
+    <div class="loading-track"><div class="loading-bar"></div></div>
+    <button id="retryLoad" class="primary-btn retry-btn" type="button">Повторить загрузку</button>
   </div>
+</section>
 
-  <section class="card">
-    <h1>Подключение</h1>
-    <p>Введи данные доступа к GitHub и Cloudflare.</p>
-
-    <form id="connectionForm">
-      <label for="accountId">Cloudflare Account ID</label>
-      <input id="accountId" autocomplete="off" spellcheck="false"
-        placeholder="Введи Account ID" required>
-
-      <label for="githubToken">GitHub Token</label>
-      <input id="githubToken" type="password" autocomplete="new-password"
-        placeholder="Введи GitHub Token" required>
-
-      <label for="cloudflareToken">Cloudflare API Token</label>
-      <input id="cloudflareToken" type="password" autocomplete="new-password"
-        placeholder="Введи Cloudflare API Token" required>
-
-      <button id="connectButton" class="full" type="submit">Подключиться</button>
+<section id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-symbol"><svg class="icon"><use href="#i-spark"/></svg></div>
+      <div>
+        <div id="loginBrandName" class="brand-name">AI</div>
+        <div class="brand-caption">INTELLIGENCE INTERFACE</div>
+      </div>
+    </div>
+    <h1 class="login-title">Добро пожаловать</h1>
+    <p class="login-description">Введи имя пользователя и пароль, выданный администратором, чтобы получить доступ к чату.</p>
+    <form id="loginForm">
+      <div class="field-group">
+        <label class="field-label" for="usernameInput">ИМЯ ПОЛЬЗОВАТЕЛЯ</label>
+        <div class="password-wrap">
+          <svg class="icon"><use href="#i-user"/></svg>
+          <input id="usernameInput" type="text" placeholder="Введи своё имя" autocomplete="username" maxlength="60" required>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="passwordInput">ПАРОЛЬ ДОСТУПА</label>
+        <div class="password-wrap">
+          <svg class="icon"><use href="#i-lock"/></svg>
+          <input id="passwordInput" type="password" placeholder="Введи пароль" autocomplete="current-password" required>
+          <button id="togglePassword" class="icon-btn" type="button" aria-label="Показать пароль" style="width:34px;height:34px;border:0;background:transparent">
+            <svg class="icon"><use href="#i-eye"/></svg>
+          </button>
+        </div>
+      </div>
+      <p class="password-help">Если у тебя нет пароля, попроси его у администратора <a class="shimmer-link" href="https://t.me/PointCreation" target="_blank" rel="noopener noreferrer">PointCreation</a>.</p>
+      <button id="loginSubmit" class="primary-btn login-submit" type="submit">Войти <svg class="icon"><use href="#i-spark"/></svg></button>
+      <p id="loginError" class="login-error" role="alert"></p>
     </form>
-
-    <div id="connectionStatus" class="status" role="status">
-      Ожидание подключения.
-    </div>
-    <div class="note">Токены сохраняются в localStorage только после успешной проверки. Не вводи их на чужом устройстве.</div>
-  </section>
-  <div class="footer">NEXUS AI · SECURE ADMIN</div>
-</main>
-
-<!-- АДМИН-ПАНЕЛЬ ДО ПОДКЛЮЧЕНИЯ СКРЫТА -->
-<main id="adminScreen" class="screen hidden">
-  <div class="brand">
-    <div class="logo">N</div>
-    <div><div class="brand-name">NEXUS AI</div><div class="sub">ADMIN CONTROL PANEL</div></div>
+    <div class="login-foot"><svg class="icon" style="width:15px;height:15px"><use href="#i-lock"/></svg><span>Доступ по выданному паролю</span></div>
   </div>
+</section>
 
-  <div class="topbar">
-    <div>
-      <h1>Админ-панель</h1>
-      <div class="sub">Репозиторий: null152/NullAI · ветка main</div>
-    </div>
-    <div class="row">
-      <button id="reloadButton" class="secondary">Загрузить</button>
-      <button id="disconnectButton" class="danger">Отключиться</button>
+<div id="app" class="app">
+  <main class="workspace">
+    <header class="topbar">
+      <div class="top-heading">
+        <div class="top-ai-icon" aria-hidden="true"><svg class="icon"><use href="#i-spark"/></svg></div>
+        <div id="topTitle" class="top-title">AI</div>
+      </div>
+      <div class="top-actions">
+        <div id="dailyLimit" class="daily-limit" title="Оставшиеся сообщения на сегодня"><span>Лимит</span><strong id="dailyLimitCount">100/100</strong></div>
+        <button id="changeNameBtn" class="icon-btn" type="button" title="Изменить имя" aria-label="Изменить имя"><svg class="icon"><use href="#i-user"/></svg></button>
+        <button id="clearHistoryBtn" class="icon-btn" type="button" title="Очистить историю" aria-label="Очистить историю"><svg class="icon"><use href="#i-trash"/></svg></button>
+      </div>
+    </header>
+
+    <section id="chatScroll" class="chat-scroll">
+      <div class="chat-content">
+        <div id="welcome" class="welcome">
+          <div class="logo-symbol"><svg class="icon"><use href="#i-spark"/></svg></div>
+          <h1>Привет! Я <span id="welcomeName">AI</span></h1>
+          <p id="welcomeDescription">Я готов к разговору. Напиши мне что-нибудь.</p>
+          <div id="welcomeInfo" class="welcome-info"></div>
+        </div>
+        <div id="messages" class="messages"></div>
+      </div>
+    </section>
+
+    <footer class="composer-area">
+      <div class="composer">
+        <textarea id="messageInput" rows="1" wrap="off" maxlength="100000" placeholder="Напиши сообщение..." aria-label="Сообщение"></textarea>
+        <div class="composer-bottom">
+          <button id="sendBtn" class="icon-btn send-btn" type="button" title="Отправить" aria-label="Отправить"><svg class="icon"><use href="#i-send"/></svg></button>
+        </div>
+      </div>
+    </footer>
+  </main>
+</div>
+
+<div id="nameModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
+  <div class="modal-card">
+    <div class="modal-icon"><svg class="icon"><use href="#i-user"/></svg></div>
+    <h2 id="nameModalTitle" class="modal-title">Твоё имя</h2>
+    <p class="modal-description">Новое имя будет использоваться в чате и в следующих сообщениях ИИ.</p>
+    <form id="nameForm">
+      <label class="field-label" for="newNameInput">ИМЯ ПОЛЬЗОВАТЕЛЯ</label>
+      <input id="newNameInput" class="modal-input" maxlength="60" autocomplete="nickname" placeholder="Введи новое имя" required>
+      <div id="nameError" class="modal-error" role="alert"></div>
+      <div class="modal-actions">
+        <button id="cancelNameBtn" class="secondary-btn" type="button">Отмена</button>
+        <button class="primary-btn" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="confirmModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal-card">
+    <div class="modal-icon"><svg class="icon"><use href="#i-trash"/></svg></div>
+    <h2 id="confirmTitle" class="modal-title">Очистить историю?</h2>
+    <p class="modal-description">Все сообщения этого чата будут удалены с этого устройства. Пароль и доступ к сайту сохранятся.</p>
+    <div class="modal-actions">
+      <button id="cancelClearBtn" class="secondary-btn" type="button">Отмена</button>
+      <button id="confirmClearBtn" class="primary-btn danger-btn" type="button">Очистить</button>
     </div>
   </div>
+</div>
 
-  <section class="card">
-    <h2>Переменные AI</h2>
-    <p>Загрузка и сохранение data.json.</p>
-
-    <label for="aiName">aiName</label>
-    <input id="aiName" placeholder="Название AI">
-
-    <label for="aiRules">aiRules</label>
-    <textarea id="aiRules" placeholder="Правила поведения AI"></textarea>
-
-    <label for="info">info</label>
-    <textarea id="info" placeholder="Информация об AI"></textarea>
-
-    <div class="row">
-      <button id="saveButton">Сохранить изменения</button>
-      <button id="loadButton" class="secondary">Перезагрузить данные</button>
-    </div>
-    <div id="dataStatus" class="status" role="status">Данные ещё не загружены.</div>
-  </section>
-
-  <section class="card">
-    <h2>Пароль входа</h2>
-    <p>Обновление секрета SIGNIN_PASSWORD в Cloudflare Worker.</p>
-
-    <label for="lastPassword">Последний созданный пароль</label>
-    <input id="lastPassword" type="password" autocomplete="new-password"
-      placeholder="Пароль появится после обновления">
-
-    <div class="row">
-      <button id="showPasswordButton" class="secondary">Показать / скрыть</button>
-      <button id="copyPasswordButton" class="secondary">Копировать пароль</button>
-    </div>
-
-    <button id="rotatePasswordButton" class="full">Обновить пароль</button>
-    <div id="passwordStatus" class="status" role="status">
-      Текущий секрет Cloudflare нельзя прочитать через API. Здесь показывается только пароль, созданный этой панелью.
-    </div>
-    <div class="note">После обновления старый пароль перестанет работать. Сохрани новый пароль до закрытия страницы.</div>
-  </section>
-
-  <div class="footer">NEXUS AI · ADMIN CONTROL</div>
-</main>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
 "use strict";
 
-const OWNER = "null152";
-const REPO = "NullAI";
-const BRANCH = "main";
-const FILE_PATH = "data.json";
-const WORKER_NAME = "damp-snow-953c";
+const WORKER_URL = "https://damp-snow-953c.tolpyginvalera10.workers.dev";
+const DATA_URLS = [
+  "https://raw.githubusercontent.com/null152/NullAI/main/data.json",
+  "https://raw.githubusercontent.com/null152/NullAI/master/data.json"
+];
 
-const KEYS = {
-  account: "nexus_admin_account_id",
-  github: "nexus_admin_github_token",
-  cloudflare: "nexus_admin_cloudflare_token",
-  password: "nexus_admin_last_signin_password"
-};
+const SESSION_KEY = "nexus_session_v1";
+const HISTORY_KEY = "nexus_history_v1";
+const DAILY_KEY = "nexus_daily_usage_v2";
+const COOLDOWN_KEY = "nexus_cooldown_v2";
+
+const SESSION_DURATION = 24 * 60 * 60 * 1000;
+const MAX_HISTORY = 100;
+const CONTEXT_MESSAGES = 30;
+const MAX_MESSAGE_LENGTH = 100000;
+const DAILY_LIMIT = 100;
+const COOLDOWN_MS = 10000;
 
 const $ = id => document.getElementById(id);
-let fileSha = null;
-let loadedData = {};
+const loadingScreen = $("loadingScreen");
+const loadingStatus = $("loadingStatus");
+const retryLoad = $("retryLoad");
+const loginScreen = $("loginScreen");
+const loginForm = $("loginForm");
+const usernameInput = $("usernameInput");
+const passwordInput = $("passwordInput");
+const loginError = $("loginError");
+const loginSubmit = $("loginSubmit");
+const app = $("app");
+const messageInput = $("messageInput");
+const messagesEl = $("messages");
+const welcome = $("welcome");
+const chatScroll = $("chatScroll");
+const sendBtn = $("sendBtn");
+const dailyLimit = $("dailyLimit");
+const dailyLimitCount = $("dailyLimitCount");
+const toast = $("toast");
+const nameModal = $("nameModal");
+const nameForm = $("nameForm");
+const newNameInput = $("newNameInput");
+const nameError = $("nameError");
+const confirmModal = $("confirmModal");
+
+let currentPassword = "";
+let currentUsername = "";
+let history = [];
 let busy = false;
 
-function status(id, message, kind = "") {
-  const element = $(id);
-  element.textContent = message;
-  element.className = "status" + (kind ? " " + kind : "");
+let aiData = {
+  aiName: "AI",
+  aiRules: "",
+  info: "",
+  подробности: ""
+};
+
+let toastTimeout = null;
+let cooldownTimer = null;
+let cooldownUntil = 0;
+
+function asText(value) {
+  if (typeof value === "string") return value;
+  if (value == null) return "";
+  try { return JSON.stringify(value, null, 2); }
+  catch { return String(value); }
 }
 
-function showConnection() {
-  $("connectionScreen").classList.remove("hidden");
-  $("adminScreen").classList.add("hidden");
-}
-
-function showAdmin() {
-  $("connectionScreen").classList.add("hidden");
-  $("adminScreen").classList.remove("hidden");
-  $("lastPassword").value = localStorage.getItem(KEYS.password) || "";
-}
-
-function setBusy(value) {
-  busy = value;
-  [
-    "connectButton", "reloadButton", "disconnectButton",
-    "saveButton", "loadButton", "rotatePasswordButton"
-  ].forEach(id => $(id).disabled = value);
-}
-
-function getCredentials() {
-  return {
-    account: localStorage.getItem(KEYS.account) || "",
-    github: localStorage.getItem(KEYS.github) || "",
-    cloudflare: localStorage.getItem(KEYS.cloudflare) || ""
-  };
-}
-
-async function requestJson(url, options = {}, service = "API") {
-  let response;
-
+function getSession() {
   try {
-    response = await fetch(url, options);
-  } catch (error) {
-    const detail = error && error.message ? error.message : String(error);
-    throw new Error(
-      service + ": браузер не получил ответ (" + detail + ").\n" +
-      "Возможные причины: CORS, блокировка сети, расширение браузера или недоступность API. " +
-      "Эта ошибка сама по себе не доказывает, что токен неправильный."
-    );
-  }
-
-  const raw = await response.text();
-  let result = {};
-  try {
-    result = raw ? JSON.parse(raw) : {};
+    const raw = localStorage.getItem(SESSION_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || typeof s.password !== "string" ||
+        typeof s.username !== "string" || !s.username.trim() ||
+        !Number.isFinite(s.expiresAt) || s.expiresAt <= Date.now()) {
+      localStorage.removeItem(SESSION_KEY);
+      return null;
+    }
+    return s;
   } catch {
-    result = { message: raw.slice(0, 500) };
-  }
-
-  if (!response.ok) {
-    const message = result.message ||
-      result.error ||
-      (result.errors && result.errors.map(e => e.message).join("; ")) ||
-      ("HTTP " + response.status);
-
-    throw new Error(service + ": HTTP " + response.status + " — " + message);
-  }
-
-  return result;
-}
-
-function githubHeaders(token) {
-  return {
-    "Accept": "application/vnd.github+json",
-    "Authorization": "Bearer " + token,
-    "X-GitHub-Api-Version": "2022-11-28"
-  };
-}
-
-async function checkGitHub(token) {
-  await requestJson(
-    "https://api.github.com/user",
-    { headers: githubHeaders(token) },
-    "GitHub: проверка токена"
-  );
-
-  await requestJson(
-    "https://api.github.com/repos/" + OWNER + "/" + REPO,
-    { headers: githubHeaders(token) },
-    "GitHub: проверка репозитория " + OWNER + "/" + REPO
-  );
-}
-
-async function checkCloudflare(account, token) {
-  const result = await requestJson(
-    "https://api.cloudflare.com/client/v4/accounts/" +
-      encodeURIComponent(account) + "/tokens/verify",
-    { headers: { "Authorization": "Bearer " + token } },
-    "Cloudflare: проверка токена"
-  );
-
-  if (result.success === false) {
-    throw new Error("Cloudflare: API Token не прошёл проверку.");
+    try { localStorage.removeItem(SESSION_KEY); } catch {}
+    return null;
   }
 }
 
-function saveCredentials(account, github, cloudflare) {
-  localStorage.setItem(KEYS.account, account);
-  localStorage.setItem(KEYS.github, github);
-  localStorage.setItem(KEYS.cloudflare, cloudflare);
+function saveSession(password, username) {
+  const old = getSession();
+  localStorage.setItem(SESSION_KEY, JSON.stringify({
+    password, username,
+    expiresAt: old?.expiresAt > Date.now()
+      ? old.expiresAt : Date.now() + SESSION_DURATION
+  }));
+  currentPassword = password;
+  currentUsername = username;
 }
 
-$("connectionForm").addEventListener("submit", async event => {
-  event.preventDefault();
-  if (busy) return;
+function clearSession() {
+  try { localStorage.removeItem(SESSION_KEY); } catch {}
+  currentPassword = "";
+  currentUsername = "";
+}
 
-  const account = $("accountId").value.trim();
-  const github = $("githubToken").value.trim();
-  const cloudflare = $("cloudflareToken").value.trim();
+function sessionIsValid() {
+  const s = getSession();
+  if (!s) {
+    currentPassword = "";
+    currentUsername = "";
+    showLogin();
+    return false;
+  }
+  currentPassword = s.password;
+  currentUsername = s.username;
+  return true;
+}
 
-  setBusy(true);
-  status("connectionStatus", "Шаг 1/2: проверяю GitHub…");
+function showLogin() {
+  app.classList.remove("visible");
+  loginScreen.style.display = "flex";
+  loadingScreen.style.display = "none";
+  passwordInput.value = "";
+  loginError.textContent = "";
+  loginSubmit.disabled = false;
+}
 
+function showApp() {
+  loginScreen.style.display = "none";
+  loadingScreen.style.display = "none";
+  app.classList.add("visible");
+  const s = getSession();
+  if (s) {
+    currentPassword = s.password;
+    currentUsername = s.username;
+    usernameInput.value = s.username;
+  }
+  loadHistory();
+  renderHistory();
+  loadCooldown();
+  updateDailyLimit();
+  updateSendButton();
+}
+
+function showToast(message) {
+  toast.textContent = message;
+  toast.hidden = false;
+  if (toastTimeout) clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => { toast.hidden = true; }, 3000);
+}
+
+function openModal(modal) { modal.classList.add("open"); }
+function closeModal(modal) { modal.classList.remove("open"); }
+
+function getLocalDateKey() {
+  const d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth()+1).padStart(2,"0") + "-" +
+    String(d.getDate()).padStart(2,"0");
+}
+
+function getDailyUsageKey() {
+  return DAILY_KEY + "_" + getLocalDateKey();
+}
+
+function getDailyUsage() {
   try {
-    await checkGitHub(github);
+    const n = Number(localStorage.getItem(getDailyUsageKey()) || "0");
+    if (!Number.isFinite(n) || n < 0) return 0;
+    return Math.min(Math.floor(n), DAILY_LIMIT);
+  } catch { return 0; }
+}
 
-    status("connectionStatus", "GitHub доступен. Шаг 2/2: проверяю Cloudflare…");
-    await checkCloudflare(account, cloudflare);
-
-    saveCredentials(account, github, cloudflare);
-    showAdmin();
-    status("connectionStatus", "Подключение успешно.", "ok");
-
-    setBusy(false);
-    await loadData();
-  } catch (error) {
-    status(
-      "connectionStatus",
-      "Подключение не удалось:\n" +
-      (error && error.message ? error.message : String(error)),
-      "error"
+function saveDailyUsage(n) {
+  try {
+    localStorage.setItem(
+      getDailyUsageKey(),
+      String(Math.max(0, Math.min(DAILY_LIMIT, Math.floor(n))))
     );
-    console.error("NEXUS connection error:", error);
-  } finally {
-    setBusy(false);
+  } catch {
+    showToast("Не удалось сохранить счётчик сообщений");
   }
-});
+}
 
-async function githubRequest(path, options = {}) {
-  const { github } = getCredentials();
-  if (!github) throw new Error("GitHub Token не сохранён.");
+function updateDailyLimit() {
+  const remaining = Math.max(0, DAILY_LIMIT - getDailyUsage());
+  dailyLimitCount.textContent = remaining + "/" + DAILY_LIMIT;
+  dailyLimit.classList.toggle("warning", remaining > 0 && remaining <= 10);
+  dailyLimit.classList.toggle("exhausted", remaining <= 0);
+  updateSendButton();
+}
 
-  return requestJson(
-    "https://api.github.com" + path,
-    {
-      ...options,
-      headers: {
-        ...githubHeaders(github),
-        ...(options.body ? { "Content-Type": "application/json" } : {}),
-        ...(options.headers || {})
+function getCooldownKey() {
+  return COOLDOWN_KEY;
+}
+
+function loadCooldown() {
+  try {
+    cooldownUntil = Number(localStorage.getItem(getCooldownKey()) || "0");
+    if (!Number.isFinite(cooldownUntil)) cooldownUntil = 0;
+  } catch { cooldownUntil = 0; }
+  if (cooldownTimer) clearInterval(cooldownTimer);
+  cooldownTimer = null;
+  updateSendButton();
+  if (cooldownUntil > Date.now()) startCooldownTicker();
+}
+
+function startCooldownTicker() {
+  if (cooldownTimer) clearInterval(cooldownTimer);
+  cooldownTimer = setInterval(() => {
+    updateSendButton();
+    if (Date.now() >= cooldownUntil) {
+      clearInterval(cooldownTimer);
+      cooldownTimer = null;
+      updateSendButton();
+    }
+  }, 200);
+}
+
+function startCooldown() {
+  cooldownUntil = Date.now() + COOLDOWN_MS;
+  try {
+    localStorage.setItem(getCooldownKey(), String(cooldownUntil));
+  } catch {}
+  startCooldownTicker();
+  updateSendButton();
+}
+
+function updateSendButton() {
+  const remaining = Math.max(0, DAILY_LIMIT - getDailyUsage());
+  const wait = Math.max(0, cooldownUntil - Date.now());
+  const icon = sendBtn.querySelector(".icon");
+  let countdown = sendBtn.querySelector(".send-countdown");
+
+  if (wait > 0 && !busy) {
+    sendBtn.classList.add("cooldown");
+    sendBtn.disabled = true;
+    sendBtn.title = "Можно отправить через " + Math.ceil(wait / 1000) + " сек.";
+    sendBtn.setAttribute("aria-label", sendBtn.title);
+    if (!countdown) {
+      countdown = document.createElement("span");
+      countdown.className = "send-countdown";
+      sendBtn.appendChild(countdown);
+    }
+    countdown.textContent = Math.ceil(wait / 1000) + "с";
+    if (icon) icon.style.display = "none";
+  } else {
+    sendBtn.classList.remove("cooldown");
+    sendBtn.disabled = busy || remaining <= 0 || !getSession();
+    sendBtn.title = remaining <= 0 ? "Дневной лимит исчерпан" : busy ? "Получаем ответ..." : "Отправить";
+    sendBtn.setAttribute("aria-label", sendBtn.title);
+    if (countdown) countdown.remove();
+    if (icon) icon.style.display = "";
+  }
+}
+
+function resizeInput() {
+  messageInput.style.height = "";
+}
+
+async function loadRemoteData() {
+  retryLoad.style.display = "none";
+  loadingStatus.textContent = "Загружаем настройки из GitHub...";
+  let lastError = "Не удалось загрузить data.json";
+
+  for (const url of DATA_URLS) {
+    try {
+      const r = await fetch(url, {
+        cache:"no-store",
+        headers:{Accept:"application/json"}
+      });
+      if (!r.ok) {
+        lastError = "GitHub вернул HTTP " + r.status;
+        continue;
       }
-    },
-    "GitHub"
-  );
+      const d = await r.json();
+      if (!d || typeof d !== "object" || Array.isArray(d)) {
+        lastError = "data.json должен содержать JSON-объект";
+        continue;
+      }
+
+      aiData = {
+        aiName: typeof d.aiName === "string" && d.aiName.trim()
+          ? d.aiName.trim() : "AI",
+        aiRules: asText(d.aiRules),
+        info: asText(d.info),
+        подробности: asText(d["подробности"])
+      };
+
+      document.title = aiData.aiName;
+      $("topTitle").textContent = aiData.aiName;
+      $("loginBrandName").textContent = aiData.aiName;
+      $("welcomeName").textContent = aiData.aiName;
+      $("welcomeDescription").textContent =
+        "Привет! Я " + aiData.aiName + ". Напиши мне что-нибудь, и мы начнём общаться.";
+      $("welcomeInfo").textContent = aiData.info;
+      loadingStatus.textContent = "Настройки загружены";
+      return true;
+    } catch (e) {
+      lastError = e.message || "Ошибка загрузки";
+    }
+  }
+
+  loadingStatus.textContent = lastError + ". Проверь репозиторий и наличие data.json.";
+  retryLoad.style.display = "inline-block";
+  return false;
 }
 
-function fileApiPath() {
-  return "/repos/" + OWNER + "/" + REPO + "/contents/" + FILE_PATH;
+async function initialize() {
+  loadingScreen.style.display = "flex";
+  loginScreen.style.display = "none";
+  app.classList.remove("visible");
+  if (!await loadRemoteData()) return;
+  const s = getSession();
+  if (s) {
+    currentPassword = s.password;
+    currentUsername = s.username;
+    usernameInput.value = s.username;
+    showApp();
+  } else showLogin();
 }
+retryLoad.addEventListener("click", initialize);
 
-async function loadData() {
-  if (busy) return;
-  setBusy(true);
-  status("dataStatus", "Загружаю data.json…");
-
+function loadHistory() {
   try {
-    const result = await githubRequest(
-      fileApiPath() + "?ref=" + encodeURIComponent(BRANCH)
-    );
+    const saved = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+    history = Array.isArray(saved)
+      ? saved.filter(m => m && ["user","assistant"].includes(m.role) &&
+          typeof m.content === "string").slice(-MAX_HISTORY)
+      : [];
+  } catch { history = []; }
+}
 
-    if (!result.content) {
-      throw new Error("GitHub не вернул содержимое файла.");
+function saveHistory() {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); }
+  catch { showToast("Не удалось сохранить историю"); }
+}
+
+function iconUse(name) {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("class","icon");
+  const use = document.createElementNS("http://www.w3.org/2000/svg","use");
+  use.setAttribute("href","#i-"+name);
+  svg.appendChild(use);
+  return svg;
+}
+
+function renderInlineFormattedText(container, text) {
+  const re = /\*\*([\s\S]+?)\*\*|\[((?:https?:\/\/)[^\s\]]+)\*([^\]]+)\]|<([^<>]+)>/g;
+  let cursor = 0;
+  let m;
+
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > cursor) {
+      container.appendChild(document.createTextNode(text.slice(cursor, m.index)));
     }
 
-    const binary = atob(result.content.replace(/\n/g, ""));
-    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-    const parsed = JSON.parse(new TextDecoder().decode(bytes));
+    if (m[1] !== undefined) {
+      const boldContent = m[1];
+      const headingMatch = boldContent.match(/^<([^<>]+)>$/);
 
-    fileSha = result.sha;
-    loadedData = parsed;
+      if (headingMatch) {
+        const heading = document.createElement("span");
+        heading.className = "chat-heading colored-heading";
+        renderInlineFormattedText(heading, headingMatch[1]);
+        container.appendChild(heading);
+      } else {
+        const strong = document.createElement("strong");
+        strong.className = "accent-text";
+        strong.textContent = boldContent;
+        container.appendChild(strong);
+      }
+    } else if (m[2] !== undefined) {
+      try {
+        const url = new URL(m[2]);
+        if (url.protocol === "https:" || url.protocol === "http:") {
+          const a = document.createElement("a");
+          a.className = "shimmer-link";
+          a.href = url.href;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = m[3];
+          container.appendChild(a);
+        } else {
+          container.appendChild(document.createTextNode(m[0]));
+        }
+      } catch {
+        container.appendChild(document.createTextNode(m[0]));
+      }
+    } else if (m[4] !== undefined) {
+      const heading = document.createElement("span");
+      heading.className = "chat-heading";
+      renderInlineFormattedText(heading, m[4]);
+      container.appendChild(heading);
+    }
 
-    $("aiName").value = parsed.aiName ?? "";
-    $("aiRules").value = parsed.aiRules ?? "";
-    $("info").value = parsed.info ?? "";
+    cursor = re.lastIndex;
+  }
 
-    status("dataStatus", "data.json успешно загружен.", "ok");
-  } catch (error) {
-    status("dataStatus", "Ошибка загрузки:\n" + error.message, "error");
-    console.error("NEXUS data load error:", error);
-  } finally {
-    setBusy(false);
+  if (cursor < text.length) {
+    container.appendChild(document.createTextNode(text.slice(cursor)));
   }
 }
 
-async function saveData() {
-  if (busy) return;
-  setBusy(true);
-  status("dataStatus", "Сохраняю изменения…");
+function renderFormattedText(container,text) {
+  const trimmed = text.trim();
 
-  try {
-    // Берём актуальную версию файла, чтобы не использовать старый SHA.
-    const existing = await githubRequest(
-      fileApiPath() + "?ref=" + encodeURIComponent(BRANCH)
-    );
-
-    const updated = {
-      ...loadedData,
-      aiName: $("aiName").value,
-      aiRules: $("aiRules").value,
-      info: $("info").value
-    };
-
-    const bytes = new TextEncoder().encode(JSON.stringify(updated, null, 2));
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-
-    const result = await githubRequest(fileApiPath(), {
-      method: "PUT",
-      body: JSON.stringify({
-        message: "Update NEXUS AI settings",
-        content: btoa(binary),
-        sha: existing.sha,
-        branch: BRANCH
-      })
-    });
-
-    fileSha = result.content?.sha || null;
-    loadedData = updated;
-    status("dataStatus", "Изменения сохранены в GitHub.", "ok");
-  } catch (error) {
-    status("dataStatus", "Ошибка сохранения:\n" + error.message, "error");
-    console.error("NEXUS data save error:", error);
-  } finally {
-    setBusy(false);
-  }
-}
-
-function makePassword(length = 36) {
-  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789-_!@";
-  const max = Math.floor(256 / alphabet.length) * alphabet.length;
-  let result = "";
-
-  while (result.length < length) {
-    const random = new Uint8Array(length * 2);
-    crypto.getRandomValues(random);
-
-    for (const byte of random) {
-      if (byte >= max) continue;
-      result += alphabet[byte % alphabet.length];
-      if (result.length === length) break;
-    }
-  }
-
-  return result;
-}
-
-async function rotatePassword() {
-  if (busy) return;
-
-  if (!confirm(
-    "Обновить SIGNIN_PASSWORD в Cloudflare Worker?\n" +
-    "После успешного обновления старый пароль перестанет работать."
-  )) return;
-
-  setBusy(true);
-  status("passwordStatus", "Проверяю доступ к Cloudflare…");
-
-  try {
-    const { account, cloudflare } = getCredentials();
-    await checkCloudflare(account, cloudflare);
-
-    const base =
-      "https://api.cloudflare.com/client/v4/accounts/" +
-      encodeURIComponent(account) +
-      "/workers/scripts/" +
-      encodeURIComponent(WORKER_NAME) +
-      "/secrets";
-
-    const headers = {
-      "Authorization": "Bearer " + cloudflare,
-      "Content-Type": "application/json"
-    };
-
-    // Проверяем список секретов, чтобы создать новый или обновить существующий.
-    const listed = await requestJson(base, { headers }, "Cloudflare: список секретов");
-    if (listed.success === false) {
-      throw new Error("Cloudflare не разрешил получить список секретов.");
-    }
-
-    const secrets = Array.isArray(listed.result) ? listed.result : [];
-    const exists = secrets.some(item => item.name === "SIGNIN_PASSWORD");
-    const password = makePassword();
-
-    const endpoint = exists
-      ? base + "/SIGNIN_PASSWORD"
-      : base;
-
-    const result = await requestJson(endpoint, {
-      method: exists ? "PUT" : "POST",
-      headers,
-      body: JSON.stringify({
-        name: "SIGNIN_PASSWORD",
-        text: password,
-        type: "secret_text"
-      })
-    }, "Cloudflare: обновление SIGNIN_PASSWORD");
-
-    if (result.success === false) {
-      throw new Error(
-        (result.errors || []).map(e => e.message).join("; ") ||
-        "Cloudflare отклонил обновление секрета."
-      );
-    }
-
-    localStorage.setItem(KEYS.password, password);
-    $("lastPassword").value = password;
-    $("lastPassword").type = "text";
-
-    status(
-      "passwordStatus",
-      "Секрет обновлён. Скопируй новый пароль и сохрани его в надёжном месте.",
-      "ok"
-    );
-  } catch (error) {
-    status(
-      "passwordStatus",
-      "Не удалось обновить пароль:\n" + error.message +
-      "\nПроверь разрешения API Token и имя Worker. Если сообщение содержит Failed to fetch, вероятна блокировка браузером или сетью.",
-      "error"
-    );
-    console.error("NEXUS password rotation error:", error);
-  } finally {
-    setBusy(false);
-  }
-}
-
-$("saveButton").addEventListener("click", saveData);
-$("loadButton").addEventListener("click", loadData);
-$("reloadButton").addEventListener("click", loadData);
-$("rotatePasswordButton").addEventListener("click", rotatePassword);
-
-$("disconnectButton").addEventListener("click", () => {
-  if (!confirm("Удалить сохранённые токены и пароль из этого браузера?")) return;
-
-  Object.values(KEYS).forEach(key => localStorage.removeItem(key));
-  fileSha = null;
-  loadedData = {};
-  $("connectionForm").reset();
-  $("aiName").value = "";
-  $("aiRules").value = "";
-  $("info").value = "";
-  $("lastPassword").value = "";
-  showConnection();
-  status("connectionStatus", "Сохранённые данные подключения удалены.");
-});
-
-$("showPasswordButton").addEventListener("click", () => {
-  $("lastPassword").type =
-    $("lastPassword").type === "password" ? "text" : "password";
-});
-
-$("copyPasswordButton").addEventListener("click", async () => {
-  const password = $("lastPassword").value;
-
-  if (!password) {
-    status("passwordStatus", "Пароль ещё не создан.", "error");
+  if (trimmed.startsWith("<") && trimmed.endsWith(">") &&
+      !trimmed.includes("\n") && /^<[^<>]+>$/.test(trimmed)) {
+    const h = document.createElement("span");
+    h.className = "chat-heading";
+    renderInlineFormattedText(h,trimmed.slice(1,-1));
+    container.appendChild(h);
     return;
   }
 
+  text.split("\n").forEach((line,i) => {
+    if (i) container.appendChild(document.createTextNode("\n"));
+    renderInlineFormattedText(container,line);
+  });
+}
+
+function addMessage(role,content,save=true) {
+  welcome.style.display = "none";
+
+  const row = document.createElement("article");
+  row.className = "message " + role;
+
+  const avatar = document.createElement("div");
+  avatar.className = "message-avatar";
+  avatar.appendChild(iconUse(role === "user" ? "user" : "spark"));
+
+  const body = document.createElement("div");
+  body.className = "message-body";
+
+  const text = document.createElement("div");
+  text.className = "message-text";
+  renderFormattedText(text,content);
+
+  body.appendChild(text);
+  row.append(avatar,body);
+  messagesEl.appendChild(row);
+
+  if (save) {
+    history.push({role,content});
+    history = history.slice(-MAX_HISTORY);
+    saveHistory();
+  }
+
+  scrollToBottom();
+  return row;
+}
+
+function renderHistory() {
+  messagesEl.replaceChildren();
+
+  if (!history.length) {
+    welcome.style.display = "flex";
+    return;
+  }
+
+  welcome.style.display = "none";
+  for (const item of history) addMessage(item.role,item.content,false);
+  scrollToBottom();
+}
+
+function scrollToBottom() {
+  requestAnimationFrame(() => {
+    chatScroll.scrollTop = chatScroll.scrollHeight;
+  });
+}
+
+function showTyping() {
+  const row = document.createElement("article");
+  row.className = "message assistant";
+  row.id = "typingMessage";
+
+  const avatar = document.createElement("div");
+  avatar.className = "message-avatar";
+  avatar.appendChild(iconUse("spark"));
+
+  const body = document.createElement("div");
+  body.className = "message-body";
+
+  const dots = document.createElement("div");
+  dots.className = "typing";
+  for (let i=0;i<3;i++) dots.appendChild(document.createElement("span"));
+
+  const typingBox = document.createElement("div");
+  typingBox.className = "message-text";
+  typingBox.appendChild(dots);
+
+  body.appendChild(typingBox);
+  row.append(avatar,body);
+
+  welcome.style.display = "none";
+  messagesEl.appendChild(row);
+  scrollToBottom();
+}
+
+function removeTyping() {
+  $("typingMessage")?.remove();
+}
+
+async function checkPassword(password) {
+  loginError.textContent = "Проверяем пароль...";
+  loginSubmit.disabled = true;
+
   try {
-    await navigator.clipboard.writeText(password);
-    status("passwordStatus", "Пароль скопирован.", "ok");
+    const r = await fetch(WORKER_URL + "/process", {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + password
+      },
+      body:JSON.stringify({
+        html:"Проверка подключения",
+        prompt:"Ответь одним словом: OK"
+      })
+    });
+
+    let d = {};
+    try { d = await r.json(); } catch {}
+
+    if (r.status === 401) {
+      loginError.textContent = "Неверный пароль.";
+      return false;
+    }
+
+    if (!r.ok) {
+      loginError.textContent = (d.details || d.error || "Ошибка сервера") + " (HTTP " + r.status + ")";
+      return false;
+    }
+
+    return true;
   } catch {
-    $("lastPassword").select();
-    status("passwordStatus", "Автокопирование недоступно. Скопируй выделенный пароль вручную.");
+    loginError.textContent = "Не удалось подключиться к серверу. Проверь соединение и CORS.";
+    return false;
+  } finally {
+    loginSubmit.disabled = false;
+  }
+}
+
+loginForm.addEventListener("submit",async e => {
+  e.preventDefault();
+  if (busy) return;
+
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value;
+
+  if (!username) {
+    loginError.textContent = "Введи имя пользователя.";
+    return;
+  }
+  if (!password) {
+    loginError.textContent = "Введи пароль.";
+    return;
+  }
+
+  busy = true;
+  try {
+    if (await checkPassword(password)) {
+      saveSession(password,username);
+      showApp();
+      showToast("Добро пожаловать, " + username + "!");
+    }
+  } finally {
+    busy = false;
+    loginSubmit.disabled = false;
+    updateSendButton();
   }
 });
 
-(async function init() {
-  const saved = getCredentials();
+$("togglePassword").addEventListener("click",() => {
+  const visible = passwordInput.type === "text";
+  passwordInput.type = visible ? "password" : "text";
+  $("togglePassword").replaceChildren(iconUse(visible ? "eye" : "eye-off"));
+  $("togglePassword").setAttribute("aria-label",visible ? "Показать пароль" : "Скрыть пароль");
+  passwordInput.focus({preventScroll:true});
+});
 
-  if (saved.account && saved.github && saved.cloudflare) {
-    showAdmin();
-    await loadData();
-  } else {
-    showConnection();
+$("changeNameBtn").addEventListener("click",() => {
+  if (!sessionIsValid()) {
+    showToast("Сначала войди в аккаунт");
+    return;
   }
-})();
+
+  newNameInput.value = currentUsername;
+  nameError.textContent = "";
+  openModal(nameModal);
+  setTimeout(() => {
+    newNameInput.focus();
+    newNameInput.select();
+  },50);
+});
+
+$("cancelNameBtn").addEventListener("click",() => closeModal(nameModal));
+nameModal.addEventListener("click",e => {
+  if (e.target === nameModal) closeModal(nameModal);
+});
+
+nameForm.addEventListener("submit",e => {
+  e.preventDefault();
+
+  const name = newNameInput.value.trim();
+  if (!name) {
+    nameError.textContent = "Имя не может быть пустым.";
+    return;
+  }
+  if (name.length > 60) {
+    nameError.textContent = "Максимальная длина имени — 60 символов.";
+    return;
+  }
+  if (!sessionIsValid()) {
+    closeModal(nameModal);
+    showToast("Сессия истекла. Войди снова.");
+    return;
+  }
+
+  saveSession(currentPassword,name);
+  closeModal(nameModal);
+  renderHistory();
+  updateDailyLimit();
+  loadCooldown();
+  updateSendButton();
+  showToast("Имя изменено на «" + name + "»");
+});
+
+$("clearHistoryBtn").addEventListener("click",() => {
+  if (busy) {
+    showToast("Дождись завершения ответа ИИ");
+    return;
+  }
+  openModal(confirmModal);
+});
+
+$("cancelClearBtn").addEventListener("click",() => closeModal(confirmModal));
+confirmModal.addEventListener("click",e => {
+  if (e.target === confirmModal) closeModal(confirmModal);
+});
+
+$("confirmClearBtn").addEventListener("click",() => {
+  if (busy) {
+    closeModal(confirmModal);
+    showToast("Дождись завершения ответа ИИ");
+    return;
+  }
+
+  history = [];
+  try { localStorage.removeItem(HISTORY_KEY); } catch {}
+  saveHistory();
+  renderHistory();
+  closeModal(confirmModal);
+  showToast("История чата очищена");
+});
+
+document.addEventListener("keydown",e => {
+  if (e.key === "Escape") {
+    closeModal(nameModal);
+    closeModal(confirmModal);
+  }
+});
+
+async function sendMessage() {
+  if (busy) return;
+
+  if (!sessionIsValid()) {
+    showToast("Войди, чтобы продолжить");
+    return;
+  }
+
+  const text = messageInput.value.trim();
+  if (!text) return;
+
+  if (text.length > MAX_MESSAGE_LENGTH) {
+    showToast("Сообщение слишком большое");
+    return;
+  }
+
+  const used = getDailyUsage();
+  if (used >= DAILY_LIMIT) {
+    updateDailyLimit();
+    showToast("Ты использовал все 100 сообщений на сегодня");
+    return;
+  }
+
+  const wait = cooldownUntil - Date.now();
+  if (wait > 0) {
+    showToast("Подожди ещё " + Math.ceil(wait/1000) + " сек. перед отправкой");
+    updateSendButton();
+    return;
+  }
+
+  busy = true;
+  saveDailyUsage(used+1);
+  startCooldown();
+  updateDailyLimit();
+  updateSendButton();
+
+  addMessage("user",text);
+  messageInput.value = "";
+  resizeInput();
+  showTyping();
+
+  const conversation = history.slice(-CONTEXT_MESSAGES).map(m => ({
+    role:m.role,
+    content:m.content
+  }));
+
+  const systemContext = [
+    "Ты AI-помощник. Отвечай на языке пользователя.",
+    "Имя пользователя: " + currentUsername,
+    "Твоё имя: " + aiData.aiName,
+    "",
+    "Правила из data.json:",
+    aiData.aiRules || "(Правила не указаны.)",
+    "",
+    "Дополнительная информация:",
+    aiData.info || "(Информация не указана.)",
+    "",
+    "Подробности из data.json:",
+    aiData["подробности"] || "(Подробности не указаны.)",
+    "",
+    "Используй историю сообщений для понимания контекста.",
+    "Не выдумывай воспоминания, которых нет в истории.",
+    "Не повторяй вопрос пользователя без необходимости.",
+    "Общайся естественно, как собеседник. Учитывай контекст предыдущих сообщений. Не отвечай шаблонными фразами, если можно ответить проще и живее. Понимай шутки и неоднозначные вопросы.",
+    "",
+    "Форматирование ответов:",
+    "**текст** — жирный белый текст без градиента.",
+    "<текст> — белый заголовок.",
+    "**<текст>** — заголовок с цветным градиентом.",
+    "для того чтобы ссылка стала кликабельной, обязательно оберни в [ссылка*подпись] — например [https://rgdpsrandom.ps.fhgdps.com/dashboard/*Сайт GDPS]"
+  ].join("\n");
+
+  try {
+    const r = await fetch(WORKER_URL + "/process",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + currentPassword
+      },
+      body:JSON.stringify({
+        html:text,
+        prompt:text,
+        systemContext,
+        messages:conversation
+      })
+    });
+
+    let d;
+    try {
+      d = await r.json();
+    } catch {
+      throw new Error("Worker вернул некорректный JSON");
+    }
+
+    if (r.status === 401) {
+      clearSession();
+      removeTyping();
+      showLogin();
+      loginError.textContent = "Сессия истекла. Введи пароль снова.";
+      return;
+    }
+
+    if (!r.ok) {
+      throw new Error((d.details || d.error || "Ошибка запроса") + " (HTTP " + r.status + ")");
+    }
+
+    const answer = typeof d.result === "string" ? d.result :
+      typeof d.response === "string" ? d.response :
+      typeof d.answer === "string" ? d.answer :
+      typeof d.message === "string" ? d.message : null;
+
+    if (answer === null) {
+      throw new Error("В ответе сервера нет result, response, answer или message");
+    }
+
+    removeTyping();
+    addMessage("assistant",answer);
+  } catch (e) {
+    removeTyping();
+    addMessage("assistant","Не удалось получить ответ.\n\n" + (e.message || "Неизвестная ошибка"));
+  } finally {
+    busy = false;
+    updateDailyLimit();
+    updateSendButton();
+  }
+}
+
+sendBtn.addEventListener("click",sendMessage);
+
+messageInput.addEventListener("input",() => {
+  const start = messageInput.selectionStart;
+  const before = messageInput.value;
+  const after = before.replace(/[\r\n]+/g," ");
+  if (before !== after) {
+    messageInput.value = after;
+    const pos = Math.min(start,messageInput.value.length);
+    messageInput.setSelectionRange(pos,pos);
+  }
+  resizeInput();
+  updateSendButton();
+});
+
+messageInput.addEventListener("keydown",e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+document.addEventListener("visibilitychange",() => {
+  if (document.hidden || !app.classList.contains("visible")) return;
+
+  if (!sessionIsValid()) {
+    showToast("Сессия истекла. Введи пароль снова.");
+    return;
+  }
+
+  loadCooldown();
+  updateDailyLimit();
+  updateSendButton();
+});
+
+initialize();
 </script>
 </body>
 </html>
