@@ -1,799 +1,566 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#09060f">
-<title>GDPSA AI</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS AI — Admin</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
 :root {
-    --bg: #09060f;
-    --panel: #100b19;
-    --panel2: #171020;
-    --purple: #a855f7;
-    --pink: #ff4fbb;
-    --text: #f7efff;
-    --muted: #8d819d;
-    --border: rgba(186, 105, 255, .18);
+  color-scheme: dark;
+  --bg:#080b12; --panel:#101621; --border:#283349;
+  --text:#edf2ff; --muted:#929db1; --accent:#8b7cff;
+  --green:#52dfab; --red:#ff8798;
 }
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-tap-highlight-color: transparent;
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;color:var(--text);
+  background:radial-gradient(ellipse at top,#211c43,transparent 52%),var(--bg);
+  font:15px/1.5 system-ui,-apple-system,sans-serif
 }
-
-body {
-    min-height: 100dvh;
-    background: var(--bg);
-    color: var(--text);
-    font-family: Inter, Arial, sans-serif;
-    overflow: hidden;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    width: 420px;
-    height: 420px;
-    top: -230px;
-    left: 25%;
-    background: #8b22ff;
-    opacity: .13;
-    filter: blur(120px);
-    pointer-events: none;
-}
-
-body::after {
-    content: "";
-    position: fixed;
-    width: 350px;
-    height: 350px;
-    bottom: -240px;
-    right: -80px;
-    background: #ff299e;
-    opacity: .12;
-    filter: blur(100px);
-    pointer-events: none;
-}
-
-button, input {
-    font: inherit;
-}
-
-button {
-    color: inherit;
-    cursor: pointer;
-}
-
-.app {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    height: 100dvh;
-    max-width: 1000px;
-    margin: auto;
-    border-left: 1px solid rgba(255,255,255,.035);
-    border-right: 1px solid rgba(255,255,255,.035);
-    background: rgba(12, 8, 18, .74);
-}
-
-/* HEADER */
-
-.header {
-    height: 76px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 22px;
-    border-bottom: 1px solid var(--border);
-    background: rgba(15, 10, 23, .86);
-    backdrop-filter: blur(20px);
-}
-
-.brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.logo {
-    width: 43px;
-    height: 43px;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-    color: white;
-    background: linear-gradient(145deg, #a855f7, #6723bd 60%, #35104f);
-    box-shadow: 0 0 25px #a855f733;
-}
-
-.logo svg {
-    width: 25px;
-    height: 25px;
-}
-
-.brand-name {
-    font-size: 17px;
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-.brand-name span {
-    color: var(--pink);
-}
-
-.brand-sub {
-    color: var(--muted);
-    font-size: 10px;
-    margin-top: 5px;
-    letter-spacing: 1.4px;
-}
-
-.header-actions {
-    display: flex;
-    gap: 9px;
-}
-
-.icon-btn {
-    width: 39px;
-    height: 39px;
-    display: grid;
-    place-items: center;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: #ffffff04;
-    transition: .2s;
-}
-
-.icon-btn:hover {
-    color: var(--pink);
-    border-color: #ff4fbb66;
-    background: #ff4fbb0c;
-}
-
-.icon-btn svg {
-    width: 19px;
-    height: 19px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.7;
-}
-
-/* CHAT */
-
-.chat {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 32px 22px 20px;
-    scroll-behavior: smooth;
-}
-
-.messages::-webkit-scrollbar {
-    width: 4px;
-}
-
-.messages::-webkit-scrollbar-thumb {
-    background: #a855f755;
-    border-radius: 10px;
-}
-
-.welcome {
-    max-width: 480px;
-    margin: 9vh auto 35px;
-    text-align: center;
-    animation: appear .5s ease;
-}
-
-.welcome-logo {
-    width: 78px;
-    height: 78px;
-    margin: 0 auto 25px;
-    display: grid;
-    place-items: center;
-    border-radius: 25px;
-    border: 1px solid #bd7aff44;
-    background: linear-gradient(145deg, #8c36ce25, #ff4fbb0a);
-    box-shadow: 0 0 55px #a855f71c, inset 0 0 25px #a855f710;
-    color: #d8a4ff;
-}
-
-.welcome-logo svg {
-    width: 38px;
-    height: 38px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.4;
-}
-
-.welcome h1 {
-    font-size: clamp(26px, 5vw, 36px);
-    font-weight: 800;
-    letter-spacing: -1.3px;
-}
-
-.welcome h1 span {
-    background: linear-gradient(90deg, #bd77ff, #ff65c6);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-}
-
-.welcome p {
-    max-width: 340px;
-    margin: 14px auto 0;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.8;
-}
-
-.suggestions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    max-width: 490px;
-    margin: 0 auto;
-    animation: appear .7s ease;
-}
-
-.suggestion {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    min-height: 59px;
-    padding: 12px;
-    text-align: left;
-    border: 1px solid var(--border);
-    border-radius: 15px;
-    background: linear-gradient(120deg, #a855f70a, #ff4fbb05);
-    color: #c7b8d6;
-    font-size: 12px;
-    transition: .2s;
-}
-
-.suggestion:hover {
-    color: white;
-    border-color: #bd70ff77;
-    background: #a855f714;
-    transform: translateY(-2px);
-}
-
-.suggestion svg {
-    width: 20px;
-    height: 20px;
-    flex-shrink: 0;
-    stroke: var(--pink);
-    fill: none;
-    stroke-width: 1.6;
-}
-
-/* MESSAGE BUBBLES */
-
-.message {
-    display: flex;
-    gap: 11px;
-    max-width: 720px;
-    margin: 0 auto 23px;
-    animation: appear .25s ease;
-}
-
-.message.user {
-    flex-direction: row-reverse;
-}
-
-.avatar {
-    width: 34px;
-    height: 34px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    color: #ddaaff;
-    background: #a855f714;
-}
-
-.avatar svg {
-    width: 19px;
-    height: 19px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.6;
-}
-
-.user .avatar {
-    color: #ff82ce;
-    background: #ff4fbb12;
-    border-color: #ff4fbb30;
-}
-
-.message-content {
-    min-width: 0;
-    max-width: calc(100% - 45px);
-}
-
-.message-label {
-    margin: 2px 0 8px;
-    font-size: 11px;
-    font-weight: 700;
-    color: #c99aff;
-}
-
-.user .message-label {
-    text-align: right;
-    color: #ff8bd0;
-}
-
-.bubble {
-    padding: 13px 16px;
-    border: 1px solid var(--border);
-    border-radius: 4px 16px 16px 16px;
-    background: linear-gradient(135deg, #1a1026, #120c1b);
-    color: #e8dfee;
-    font-size: 13px;
-    line-height: 1.8;
-    overflow-wrap: anywhere;
-    white-space: pre-wrap;
-}
-
-.user .bubble {
-    border-color: #d34cae30;
-    border-radius: 16px 4px 16px 16px;
-    background: linear-gradient(135deg, #51205a66, #251127);
-    color: #fff0fa;
-}
-
-/* INPUT */
-
-.composer-wrap {
-    flex-shrink: 0;
-    padding: 13px 20px 17px;
-    background: linear-gradient(0deg, #0c0812 75%, transparent);
-}
-
-.composer {
-    max-width: 720px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    min-height: 58px;
-    padding: 8px 9px 8px 17px;
-    border: 1px solid #a855f746;
-    border-radius: 18px;
-    background: #150e20;
-    box-shadow: 0 0 28px #a855f70a;
-    transition: .2s;
-}
-
-.composer:focus-within {
-    border-color: #b46affaa;
-    box-shadow: 0 0 0 3px #a855f710, 0 0 30px #a855f714;
-}
-
-.composer input {
-    width: 100%;
-    min-width: 0;
-    border: none;
-    outline: none;
-    color: white;
-    background: transparent;
-    font-size: 13px;
-}
-
-.composer input::placeholder {
-    color: #746680;
-}
-
-.send-btn {
-    width: 41px;
-    height: 41px;
-    flex-shrink: 0;
-    display: grid;
-    place-items: center;
-    border: 0;
-    border-radius: 13px;
-    color: white;
-    background: linear-gradient(135deg, #b052f5, #ed42ad);
-    box-shadow: 0 0 19px #bc46e633;
-    transition: .2s;
-}
-
-.send-btn:hover {
-    filter: brightness(1.15);
-    transform: scale(1.04);
-}
-
-.send-btn:active {
-    transform: scale(.94);
-}
-
-.send-btn svg {
-    width: 20px;
-    height: 20px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 2;
-}
-
-.send-btn:disabled {
-    opacity: .45;
-    cursor: default;
-}
-
-.disclaimer {
-    margin-top: 12px;
-    color: #71647e;
-    font-size: 10px;
-    text-align: center;
-}
-
-.typing {
-    display: flex;
-    gap: 5px;
-    padding: 5px 3px;
-}
-
-.typing span {
-    width: 6px;
-    height: 6px;
-    background: var(--pink);
-    border-radius: 50%;
-    animation: bounce .8s infinite alternate;
-}
-
-.typing span:nth-child(2) { animation-delay: .2s; }
-.typing span:nth-child(3) { animation-delay: .4s; }
-
-@keyframes bounce {
-    from { opacity: .35; transform: translateY(0); }
-    to { opacity: 1; transform: translateY(-4px); }
-}
-
-@keyframes appear {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 520px) {
-    .header {
-        height: 67px;
-        padding: 0 15px;
-    }
-
-    .logo {
-        width: 39px;
-        height: 39px;
-        border-radius: 12px;
-    }
-
-    .brand-name { font-size: 15px; }
-    .brand-sub { font-size: 9px; }
-    .header-actions { gap: 6px; }
-    .icon-btn { width: 36px; height: 36px; }
-
-    .messages {
-        padding: 15px 13px 20px;
-    }
-
-    .welcome {
-        margin: 8vh auto 29px;
-    }
-
-    .welcome-logo {
-        width: 67px;
-        height: 67px;
-        border-radius: 22px;
-    }
-
-    .welcome h1 { font-size: 28px; }
-
-    .suggestions { gap: 8px; }
-
-    .suggestion {
-        min-height: 63px;
-        padding: 10px;
-        gap: 8px;
-        font-size: 11px;
-    }
-
-    .composer-wrap {
-        padding: 10px 12px 12px;
-    }
-
-    .composer {
-        min-height: 54px;
-        border-radius: 16px;
-    }
-
-    .disclaimer { font-size: 9px; }
-}
+button,input,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:11px;padding:12px 16px;font-weight:700;color:white;background:linear-gradient(135deg,#9a8dff,#6554ed)}
+button:hover{filter:brightness(1.1)}
+button:disabled{opacity:.5;cursor:wait}
+.secondary{background:#1a2333;border:1px solid #354159}
+.danger{background:#391b27;border:1px solid #743344}
+.full{width:100%;margin-top:22px}
+.screen{width:min(920px,calc(100% - 28px));margin:auto;padding:32px 0 55px}
+.hidden{display:none!important}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:26px}
+.logo{width:44px;height:44px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,#aaa0ff,#6554ed);font-size:23px;font-weight:900}
+.brand-name{font-size:21px;font-weight:850;letter-spacing:2px}
+.sub,.muted{color:var(--muted);font-size:13px}
+.card{background:#101621ed;border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:17px;box-shadow:0 16px 60px #0003}
+h1{font-size:clamp(25px,5vw,34px);margin:0 0 8px}
+h2{font-size:19px;margin:0 0 6px}
+p{color:var(--muted);margin:0 0 18px}
+label{display:block;margin:17px 0 7px;font-size:13px;font-weight:700;color:#d0d8e9}
+input,textarea{width:100%;display:block;padding:13px 14px;border-radius:11px;border:1px solid #303b50;background:#090e17;color:var(--text);outline:none}
+input:focus,textarea:focus{border-color:var(--accent)}
+textarea{min-height:135px;resize:vertical}
+.row{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.status{margin-top:14px;padding:12px;background:#090e17;border:1px solid var(--border);border-radius:10px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;color:var(--muted)}
+.status.ok{color:var(--green)}.status.error{color:var(--red)}
+.note{font-size:12px;color:var(--muted);margin-top:12px}
+.footer{text-align:center;color:#657087;font-size:12px;margin-top:24px}
+@media(max-width:550px){.screen{padding-top:20px}.card{padding:17px}.topbar{align-items:flex-start}}
 </style>
 </head>
-
 <body>
-<div class="app">
 
-    <header class="header">
-        <div class="brand">
-            <div class="logo">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                     stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/>
-                    <path d="m19 2 .8 2.2L22 5l-2.2.8L19 8l-.8-2.2L16 5l2.2-.8L19 2Z"/>
-                </svg>
-            </div>
-            <div>
-                <div class="brand-name">GDPSA <span>AI</span></div>
-                <div class="brand-sub">ARTIFICIAL INTELLIGENCE</div>
-            </div>
-        </div>
+<!-- ЭКРАН ПОДКЛЮЧЕНИЯ: РОВНО ТРИ ПОЛЯ -->
+<main id="connectionScreen" class="screen">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div><div class="brand-name">NEXUS AI</div><div class="sub">ADMINISTRATION SYSTEM</div></div>
+  </div>
 
-        <div class="header-actions">
-            <button class="icon-btn" id="newChat" title="Новый чат" aria-label="Новый чат">
-                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
-            </button>
-            <button class="icon-btn" id="clearChat" title="Очистить чат" aria-label="Очистить чат">
-                <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-                    <path d="M10 11v5M14 11v5"/>
-                </svg>
-            </button>
-        </div>
-    </header>
+  <section class="card">
+    <h1>Подключение</h1>
+    <p>Введи данные доступа к GitHub и Cloudflare.</p>
 
-    <main class="chat">
-        <div class="messages" id="messages">
+    <form id="connectionForm">
+      <label for="accountId">Cloudflare Account ID</label>
+      <input id="accountId" autocomplete="off" spellcheck="false"
+        placeholder="Введи Account ID" required>
 
-            <section id="welcome">
-                <div class="welcome">
-                    <div class="welcome-logo">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 2.5 14.8 9.2 21.5 12l-6.7 2.8-2.8 6.7-2.8-6.7L2.5 12l6.7-2.8L12 2.5Z"/>
-                            <path d="m19 2 .7 2.3L22 5l-2.3.7L19 8l-.7-2.3L15 5l2.3-.7L19 2Z"/>
-                        </svg>
-                    </div>
+      <label for="githubToken">GitHub Token</label>
+      <input id="githubToken" type="password" autocomplete="new-password"
+        placeholder="Введи GitHub Token" required>
 
-                    <h1>Привет, <span>создатель.</span></h1>
-                    <p>
-                        Я GDPSA AI — твой будущий интеллектуальный
-                        помощник. С чего начнём?
-                    </p>
-                </div>
+      <label for="cloudflareToken">Cloudflare API Token</label>
+      <input id="cloudflareToken" type="password" autocomplete="new-password"
+        placeholder="Введи Cloudflare API Token" required>
 
-                <div class="suggestions">
-                    <button class="suggestion" data-prompt="Привет! Расскажи о себе">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 3a9 9 0 1 0 9 9"/>
-                            <path d="M12 7v5l3 2M16 3h5v5"/>
-                        </svg>
-                        <span>Познакомимся?</span>
-                    </button>
+      <button id="connectButton" class="full" type="submit">Подключиться</button>
+    </form>
 
-                    <button class="suggestion" data-prompt="Помоги придумать идею для проекта">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M9 18h6M10 22h4M8 14c-1.7-1.2-3-3.2-3-5.5a7 7 0 1 1 14 0c0 2.3-1.3 4.3-3 5.5-.7.5-1 1.3-1 2H9c0-.7-.3-1.5-1-2Z"/>
-                        </svg>
-                        <span>Найти идею</span>
-                    </button>
+    <div id="connectionStatus" class="status" role="status">
+      Ожидание подключения.
+    </div>
+    <div class="note">Токены сохраняются в localStorage только после успешной проверки. Не вводи их на чужом устройстве.</div>
+  </section>
+  <div class="footer">NEXUS AI · SECURE ADMIN</div>
+</main>
 
-                    <button class="suggestion" data-prompt="Напиши пример HTML-кода">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16"/>
-                        </svg>
-                        <span>Помощь с кодом</span>
-                    </button>
+<!-- АДМИН-ПАНЕЛЬ ДО ПОДКЛЮЧЕНИЯ СКРЫТА -->
+<main id="adminScreen" class="screen hidden">
+  <div class="brand">
+    <div class="logo">N</div>
+    <div><div class="brand-name">NEXUS AI</div><div class="sub">ADMIN CONTROL PANEL</div></div>
+  </div>
 
-                    <button class="suggestion" data-prompt="Какие возможности можно добавить в GDPSA AI?">
-                        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="9"/>
-                            <path d="M12 8v8M8 12h8"/>
-                        </svg>
-                        <span>Новые возможности</span>
-                    </button>
-                </div>
-            </section>
+  <div class="topbar">
+    <div>
+      <h1>Админ-панель</h1>
+      <div class="sub">Репозиторий: null152/NullAI · ветка main</div>
+    </div>
+    <div class="row">
+      <button id="reloadButton" class="secondary">Загрузить</button>
+      <button id="disconnectButton" class="danger">Отключиться</button>
+    </div>
+  </div>
 
-        </div>
+  <section class="card">
+    <h2>Переменные AI</h2>
+    <p>Загрузка и сохранение data.json.</p>
 
-        <div class="composer-wrap">
-            <form class="composer" id="chatForm">
-                <input
-                    id="userInput"
-                    type="text"
-                    placeholder="Напиши сообщение..."
-                    autocomplete="off"
-                    maxlength="4000"
-                    aria-label="Сообщение"
-                >
-                <button class="send-btn" id="sendBtn" type="submit"
-                        aria-label="Отправить сообщение">
-                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="m22 2-7 20-4-9-9-4Z"/>
-                        <path d="M22 2 11 13"/>
-                    </svg>
-                </button>
-            </form>
-            <div class="disclaimer">GDPSA AI · ПЕРВАЯ ВЕРСИЯ</div>
-        </div>
-    </main>
-</div>
+    <label for="aiName">aiName</label>
+    <input id="aiName" placeholder="Название AI">
+
+    <label for="aiRules">aiRules</label>
+    <textarea id="aiRules" placeholder="Правила поведения AI"></textarea>
+
+    <label for="info">info</label>
+    <textarea id="info" placeholder="Информация об AI"></textarea>
+
+    <div class="row">
+      <button id="saveButton">Сохранить изменения</button>
+      <button id="loadButton" class="secondary">Перезагрузить данные</button>
+    </div>
+    <div id="dataStatus" class="status" role="status">Данные ещё не загружены.</div>
+  </section>
+
+  <section class="card">
+    <h2>Пароль входа</h2>
+    <p>Обновление секрета SIGNIN_PASSWORD в Cloudflare Worker.</p>
+
+    <label for="lastPassword">Последний созданный пароль</label>
+    <input id="lastPassword" type="password" autocomplete="new-password"
+      placeholder="Пароль появится после обновления">
+
+    <div class="row">
+      <button id="showPasswordButton" class="secondary">Показать / скрыть</button>
+      <button id="copyPasswordButton" class="secondary">Копировать пароль</button>
+    </div>
+
+    <button id="rotatePasswordButton" class="full">Обновить пароль</button>
+    <div id="passwordStatus" class="status" role="status">
+      Текущий секрет Cloudflare нельзя прочитать через API. Здесь показывается только пароль, созданный этой панелью.
+    </div>
+    <div class="note">После обновления старый пароль перестанет работать. Сохрани новый пароль до закрытия страницы.</div>
+  </section>
+
+  <div class="footer">NEXUS AI · ADMIN CONTROL</div>
+</main>
 
 <script>
-const messages = document.getElementById("messages");
-const welcome = document.getElementById("welcome");
-const input = document.getElementById("userInput");
-const form = document.getElementById("chatForm");
-const sendBtn = document.getElementById("sendBtn");
+"use strict";
 
-const botIcon = `
-<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3 14.5 9.5 21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5L12 3Z"/>
-</svg>`;
+const OWNER = "null152";
+const REPO = "NullAI";
+const BRANCH = "main";
+const FILE_PATH = "data.json";
+const WORKER_NAME = "damp-snow-953c";
 
-const userIcon = `
-<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="8" r="4"/>
-    <path d="M5 21v-2a7 7 0 0 1 14 0v2"/>
-</svg>`;
+const KEYS = {
+  account: "nexus_admin_account_id",
+  github: "nexus_admin_github_token",
+  cloudflare: "nexus_admin_cloudflare_token",
+  password: "nexus_admin_last_signin_password"
+};
 
-function addMessage(text, role) {
-    const message = document.createElement("div");
-    message.className = "message " + role;
+const $ = id => document.getElementById(id);
+let fileSha = null;
+let loadedData = {};
+let busy = false;
 
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
-    avatar.innerHTML = role === "user" ? userIcon : botIcon;
-
-    const content = document.createElement("div");
-    content.className = "message-content";
-
-    const label = document.createElement("div");
-    label.className = "message-label";
-    label.textContent = role === "user" ? "Ты" : "GDPSA AI";
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-    bubble.textContent = text;
-
-    content.append(label, bubble);
-    message.append(avatar, content);
-    messages.appendChild(message);
-
-    messages.scrollTop = messages.scrollHeight;
-    return message;
+function status(id, message, kind = "") {
+  const element = $(id);
+  element.textContent = message;
+  element.className = "status" + (kind ? " " + kind : "");
 }
 
-function showTyping() {
-    const message = document.createElement("div");
-    message.className = "message";
-
-    const avatar = document.createElement("div");
-    avatar.className = "avatar";
-    avatar.innerHTML = botIcon;
-
-    const content = document.createElement("div");
-    content.className = "message-content";
-
-    const label = document.createElement("div");
-    label.className = "message-label";
-    label.textContent = "GDPSA AI";
-
-    const bubble = document.createElement("div");
-    bubble.className = "bubble";
-
-    const typing = document.createElement("div");
-    typing.className = "typing";
-    typing.innerHTML = "<span></span><span></span><span></span>";
-
-    bubble.appendChild(typing);
-    content.append(label, bubble);
-    message.append(avatar, content);
-    messages.appendChild(message);
-    messages.scrollTop = messages.scrollHeight;
-
-    return message;
+function showConnection() {
+  $("connectionScreen").classList.remove("hidden");
+  $("adminScreen").classList.add("hidden");
 }
 
-function getDemoReply(text) {
-    const lower = text.toLowerCase();
-
-    if (/привет|здравствуй|хай|hello/.test(lower)) {
-        return "Привет! 👋 Я GDPSA AI. Сейчас это первая версия моего интерфейса. Давай вместе сделаем меня умнее!";
-    }
-
-    if (/кто ты|расскажи о себе|что ты умеешь/.test(lower)) {
-        return "Я GDPSA AI — прототип интеллектуального помощника. Пока я работаю в демонстрационном режиме. Следующим этапом можно подключить настоящую ИИ-модель.";
-    }
-
-    if (/html|код|программ|javascript|сайт/.test(lower)) {
-        return "Давай создавать! 💜 Напиши, что именно нужно сделать. В следующей версии мы сможем подключить настоящую ИИ-модель, чтобы я генерировал код и отвечал на сложные вопросы.";
-    }
-
-    if (/иде|возможност|добавить|проект/.test(lower)) {
-        return "Есть идея! ✨ Мы можем постепенно превратить GDPSA AI в полноценного помощника. Сначала подключим настоящий интеллект, затем добавим нужные тебе возможности.";
-    }
-
-    return "Я получил твоё сообщение! ✨ Пока я работаю в демонстрационном режиме и отвечаю по заготовленным правилам. Чтобы отвечать на любые вопросы по-настоящему, мне нужно подключить ИИ-модель.";
+function showAdmin() {
+  $("connectionScreen").classList.add("hidden");
+  $("adminScreen").classList.remove("hidden");
+  $("lastPassword").value = localStorage.getItem(KEYS.password) || "";
 }
 
-let replyTimer = null;
-let typingElement = null;
-let chatVersion = 0;
-
-function sendMessage(text) {
-    text = text.trim();
-    if (!text || sendBtn.disabled) return;
-
-    welcome.style.display = "none";
-
-    addMessage(text, "user");
-    input.value = "";
-    sendBtn.disabled = true;
-
-    const currentVersion = chatVersion;
-    typingElement = showTyping();
-
-    replyTimer = setTimeout(() => {
-        if (currentVersion !== chatVersion) return;
-
-        if (typingElement) {
-            typingElement.remove();
-            typingElement = null;
-        }
-
-        addMessage(getDemoReply(text), "bot");
-        sendBtn.disabled = false;
-        input.focus();
-    }, 700 + Math.random() * 500);
+function setBusy(value) {
+  busy = value;
+  [
+    "connectButton", "reloadButton", "disconnectButton",
+    "saveButton", "loadButton", "rotatePasswordButton"
+  ].forEach(id => $(id).disabled = value);
 }
 
-form.addEventListener("submit", event => {
-    event.preventDefault();
-    sendMessage(input.value);
+function getCredentials() {
+  return {
+    account: localStorage.getItem(KEYS.account) || "",
+    github: localStorage.getItem(KEYS.github) || "",
+    cloudflare: localStorage.getItem(KEYS.cloudflare) || ""
+  };
+}
+
+async function requestJson(url, options = {}, service = "API") {
+  let response;
+
+  try {
+    response = await fetch(url, options);
+  } catch (error) {
+    const detail = error && error.message ? error.message : String(error);
+    throw new Error(
+      service + ": браузер не получил ответ (" + detail + ").\n" +
+      "Возможные причины: CORS, блокировка сети, расширение браузера или недоступность API. " +
+      "Эта ошибка сама по себе не доказывает, что токен неправильный."
+    );
+  }
+
+  const raw = await response.text();
+  let result = {};
+  try {
+    result = raw ? JSON.parse(raw) : {};
+  } catch {
+    result = { message: raw.slice(0, 500) };
+  }
+
+  if (!response.ok) {
+    const message = result.message ||
+      result.error ||
+      (result.errors && result.errors.map(e => e.message).join("; ")) ||
+      ("HTTP " + response.status);
+
+    throw new Error(service + ": HTTP " + response.status + " — " + message);
+  }
+
+  return result;
+}
+
+function githubHeaders(token) {
+  return {
+    "Accept": "application/vnd.github+json",
+    "Authorization": "Bearer " + token,
+    "X-GitHub-Api-Version": "2022-11-28"
+  };
+}
+
+async function checkGitHub(token) {
+  await requestJson(
+    "https://api.github.com/user",
+    { headers: githubHeaders(token) },
+    "GitHub: проверка токена"
+  );
+
+  await requestJson(
+    "https://api.github.com/repos/" + OWNER + "/" + REPO,
+    { headers: githubHeaders(token) },
+    "GitHub: проверка репозитория " + OWNER + "/" + REPO
+  );
+}
+
+async function checkCloudflare(account, token) {
+  const result = await requestJson(
+    "https://api.cloudflare.com/client/v4/accounts/" +
+      encodeURIComponent(account) + "/tokens/verify",
+    { headers: { "Authorization": "Bearer " + token } },
+    "Cloudflare: проверка токена"
+  );
+
+  if (result.success === false) {
+    throw new Error("Cloudflare: API Token не прошёл проверку.");
+  }
+}
+
+function saveCredentials(account, github, cloudflare) {
+  localStorage.setItem(KEYS.account, account);
+  localStorage.setItem(KEYS.github, github);
+  localStorage.setItem(KEYS.cloudflare, cloudflare);
+}
+
+$("connectionForm").addEventListener("submit", async event => {
+  event.preventDefault();
+  if (busy) return;
+
+  const account = $("accountId").value.trim();
+  const github = $("githubToken").value.trim();
+  const cloudflare = $("cloudflareToken").value.trim();
+
+  setBusy(true);
+  status("connectionStatus", "Шаг 1/2: проверяю GitHub…");
+
+  try {
+    await checkGitHub(github);
+
+    status("connectionStatus", "GitHub доступен. Шаг 2/2: проверяю Cloudflare…");
+    await checkCloudflare(account, cloudflare);
+
+    saveCredentials(account, github, cloudflare);
+    showAdmin();
+    status("connectionStatus", "Подключение успешно.", "ok");
+
+    setBusy(false);
+    await loadData();
+  } catch (error) {
+    status(
+      "connectionStatus",
+      "Подключение не удалось:\n" +
+      (error && error.message ? error.message : String(error)),
+      "error"
+    );
+    console.error("NEXUS connection error:", error);
+  } finally {
+    setBusy(false);
+  }
 });
 
-document.querySelectorAll(".suggestion").forEach(button => {
-    button.addEventListener("click", () => {
-        sendMessage(button.dataset.prompt);
+async function githubRequest(path, options = {}) {
+  const { github } = getCredentials();
+  if (!github) throw new Error("GitHub Token не сохранён.");
+
+  return requestJson(
+    "https://api.github.com" + path,
+    {
+      ...options,
+      headers: {
+        ...githubHeaders(github),
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...(options.headers || {})
+      }
+    },
+    "GitHub"
+  );
+}
+
+function fileApiPath() {
+  return "/repos/" + OWNER + "/" + REPO + "/contents/" + FILE_PATH;
+}
+
+async function loadData() {
+  if (busy) return;
+  setBusy(true);
+  status("dataStatus", "Загружаю data.json…");
+
+  try {
+    const result = await githubRequest(
+      fileApiPath() + "?ref=" + encodeURIComponent(BRANCH)
+    );
+
+    if (!result.content) {
+      throw new Error("GitHub не вернул содержимое файла.");
+    }
+
+    const binary = atob(result.content.replace(/\n/g, ""));
+    const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const parsed = JSON.parse(new TextDecoder().decode(bytes));
+
+    fileSha = result.sha;
+    loadedData = parsed;
+
+    $("aiName").value = parsed.aiName ?? "";
+    $("aiRules").value = parsed.aiRules ?? "";
+    $("info").value = parsed.info ?? "";
+
+    status("dataStatus", "data.json успешно загружен.", "ok");
+  } catch (error) {
+    status("dataStatus", "Ошибка загрузки:\n" + error.message, "error");
+    console.error("NEXUS data load error:", error);
+  } finally {
+    setBusy(false);
+  }
+}
+
+async function saveData() {
+  if (busy) return;
+  setBusy(true);
+  status("dataStatus", "Сохраняю изменения…");
+
+  try {
+    // Берём актуальную версию файла, чтобы не использовать старый SHA.
+    const existing = await githubRequest(
+      fileApiPath() + "?ref=" + encodeURIComponent(BRANCH)
+    );
+
+    const updated = {
+      ...loadedData,
+      aiName: $("aiName").value,
+      aiRules: $("aiRules").value,
+      info: $("info").value
+    };
+
+    const bytes = new TextEncoder().encode(JSON.stringify(updated, null, 2));
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+
+    const result = await githubRequest(fileApiPath(), {
+      method: "PUT",
+      body: JSON.stringify({
+        message: "Update NEXUS AI settings",
+        content: btoa(binary),
+        sha: existing.sha,
+        branch: BRANCH
+      })
     });
-});
 
-function resetChat() {
-    chatVersion++;
-
-    if (replyTimer) clearTimeout(replyTimer);
-    if (typingElement) typingElement.remove();
-
-    typingElement = null;
-    replyTimer = null;
-    sendBtn.disabled = false;
-
-    messages.innerHTML = "";
-    messages.appendChild(welcome);
-    welcome.style.display = "";
-    input.value = "";
-    input.focus();
+    fileSha = result.content?.sha || null;
+    loadedData = updated;
+    status("dataStatus", "Изменения сохранены в GitHub.", "ok");
+  } catch (error) {
+    status("dataStatus", "Ошибка сохранения:\n" + error.message, "error");
+    console.error("NEXUS data save error:", error);
+  } finally {
+    setBusy(false);
+  }
 }
 
-document.getElementById("newChat").addEventListener("click", resetChat);
-document.getElementById("clearChat").addEventListener("click", resetChat);
+function makePassword(length = 36) {
+  const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789-_!@";
+  const max = Math.floor(256 / alphabet.length) * alphabet.length;
+  let result = "";
+
+  while (result.length < length) {
+    const random = new Uint8Array(length * 2);
+    crypto.getRandomValues(random);
+
+    for (const byte of random) {
+      if (byte >= max) continue;
+      result += alphabet[byte % alphabet.length];
+      if (result.length === length) break;
+    }
+  }
+
+  return result;
+}
+
+async function rotatePassword() {
+  if (busy) return;
+
+  if (!confirm(
+    "Обновить SIGNIN_PASSWORD в Cloudflare Worker?\n" +
+    "После успешного обновления старый пароль перестанет работать."
+  )) return;
+
+  setBusy(true);
+  status("passwordStatus", "Проверяю доступ к Cloudflare…");
+
+  try {
+    const { account, cloudflare } = getCredentials();
+    await checkCloudflare(account, cloudflare);
+
+    const base =
+      "https://api.cloudflare.com/client/v4/accounts/" +
+      encodeURIComponent(account) +
+      "/workers/scripts/" +
+      encodeURIComponent(WORKER_NAME) +
+      "/secrets";
+
+    const headers = {
+      "Authorization": "Bearer " + cloudflare,
+      "Content-Type": "application/json"
+    };
+
+    // Проверяем список секретов, чтобы создать новый или обновить существующий.
+    const listed = await requestJson(base, { headers }, "Cloudflare: список секретов");
+    if (listed.success === false) {
+      throw new Error("Cloudflare не разрешил получить список секретов.");
+    }
+
+    const secrets = Array.isArray(listed.result) ? listed.result : [];
+    const exists = secrets.some(item => item.name === "SIGNIN_PASSWORD");
+    const password = makePassword();
+
+    const endpoint = exists
+      ? base + "/SIGNIN_PASSWORD"
+      : base;
+
+    const result = await requestJson(endpoint, {
+      method: exists ? "PUT" : "POST",
+      headers,
+      body: JSON.stringify({
+        name: "SIGNIN_PASSWORD",
+        text: password,
+        type: "secret_text"
+      })
+    }, "Cloudflare: обновление SIGNIN_PASSWORD");
+
+    if (result.success === false) {
+      throw new Error(
+        (result.errors || []).map(e => e.message).join("; ") ||
+        "Cloudflare отклонил обновление секрета."
+      );
+    }
+
+    localStorage.setItem(KEYS.password, password);
+    $("lastPassword").value = password;
+    $("lastPassword").type = "text";
+
+    status(
+      "passwordStatus",
+      "Секрет обновлён. Скопируй новый пароль и сохрани его в надёжном месте.",
+      "ok"
+    );
+  } catch (error) {
+    status(
+      "passwordStatus",
+      "Не удалось обновить пароль:\n" + error.message +
+      "\nПроверь разрешения API Token и имя Worker. Если сообщение содержит Failed to fetch, вероятна блокировка браузером или сетью.",
+      "error"
+    );
+    console.error("NEXUS password rotation error:", error);
+  } finally {
+    setBusy(false);
+  }
+}
+
+$("saveButton").addEventListener("click", saveData);
+$("loadButton").addEventListener("click", loadData);
+$("reloadButton").addEventListener("click", loadData);
+$("rotatePasswordButton").addEventListener("click", rotatePassword);
+
+$("disconnectButton").addEventListener("click", () => {
+  if (!confirm("Удалить сохранённые токены и пароль из этого браузера?")) return;
+
+  Object.values(KEYS).forEach(key => localStorage.removeItem(key));
+  fileSha = null;
+  loadedData = {};
+  $("connectionForm").reset();
+  $("aiName").value = "";
+  $("aiRules").value = "";
+  $("info").value = "";
+  $("lastPassword").value = "";
+  showConnection();
+  status("connectionStatus", "Сохранённые данные подключения удалены.");
+});
+
+$("showPasswordButton").addEventListener("click", () => {
+  $("lastPassword").type =
+    $("lastPassword").type === "password" ? "text" : "password";
+});
+
+$("copyPasswordButton").addEventListener("click", async () => {
+  const password = $("lastPassword").value;
+
+  if (!password) {
+    status("passwordStatus", "Пароль ещё не создан.", "error");
+    return;
+  }
+
+  try {
+    await navigator.clipboard.writeText(password);
+    status("passwordStatus", "Пароль скопирован.", "ok");
+  } catch {
+    $("lastPassword").select();
+    status("passwordStatus", "Автокопирование недоступно. Скопируй выделенный пароль вручную.");
+  }
+});
+
+(async function init() {
+  const saved = getCredentials();
+
+  if (saved.account && saved.github && saved.cloudflare) {
+    showAdmin();
+    await loadData();
+  } else {
+    showConnection();
+  }
+})();
 </script>
 </body>
-  </html>
+</html>
